@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título de la pestaña -->
+    <title>Sistema de Control de Acceso</title>
+
+    <!-- Fuente externa -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Archivo CSS externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- =============================== -->
+    <!-- ENCABEZADO PRINCIPAL -->
+    <!-- =============================== -->
+
+    <header>
+        <h1>Sistema de Control de Acceso</h1>
+        <div class="subtitle">
+            Simulación Interactiva con Compuertas Lógicas
+        </div>
+    </header>
+
+
+    <!-- =============================== -->
+    <!-- CONTENEDOR GENERAL -->
+    <!-- =============================== -->
+
+    <div class="container">
+
+        <!-- =========================== -->
+        <!-- PANEL IZQUIERDO -->
+        <!-- =========================== -->
+
+        <div>
+
+            <!-- Panel de control -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    Panel de Control
+                </div>
+
+                <div class="controls-grid">
+
+                    <!-- Configuración de capacidad -->
+                    <div class="input-group">
+                        <label for="maxCapacity">Capacidad</label>
+                        <input type="number" id="maxCapacity" value="20" min="1" max="100">
+                    </div>
+
+                    <!-- Botón entrada -->
+                    <button class="btn btn-enter" id="btnEnter">
+                        ENTRADA
+                    </button>
+
+                    <!-- Botón salida -->
+                    <button class="btn btn-exit" id="btnExit" disabled>
+                        SALIDA
+                    </button>
+
+                    <!-- Reinicio -->
+                    <button class="btn btn-reset" id="btnReset">
+                        Reiniciar
+                    </button>
+
+                </div>
+            </div>
+
+
+            <!-- ======================= -->
+            <!-- PANEL ESTADÍSTICAS -->
+            <!-- ======================= -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    Estadísticas
+                </div>
+
+                <div class="stats-grid">
+
+                    <!-- Estado actual -->
+                    <div class="stat-row">
+                        <span>Estado:</span>
+
+                        <div class="status-indicator" id="statusIndicator">
+                            <div class="led" id="statusLed"></div>
+                            <span id="statusText">Vacío</span>
+</html>
