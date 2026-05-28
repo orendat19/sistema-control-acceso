@@ -1,0 +1,48 @@
+/* =======================================
+   VARIABLES GLOBALES
+======================================= */
+
+:root {
+    --primary: #6366f1;
+    --success: #10b981;
+    --danger: #ef4444;
+    --bg-color: #0f172a;
+    --text-main: #f8fafc;
+}
+
+
+/* =======================================
+   RESET GENERAL
+======================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+
+/* =======================================
+   BODY PRINCIPAL
+======================================= */
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: 1rem;
+}
+
+
+/* =======================================
+   HEADER
+======================================= */
+
+header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 2rem;
+}
