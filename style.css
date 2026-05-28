@@ -1,722 +1,720 @@
-/* =========================================================
+/* =========================================
    VARIABLES GLOBALES
-========================================================= */
+========================================= */
 :root {
 
+    /* Color principal del sistema */
     --primary: #6366f1;
+
+    /* Color principal al pasar el mouse */
     --primary-hover: #4f46e5;
 
+    /* Color éxito */
     --success: #10b981;
+
+    /* Hover del color éxito */
     --success-hover: #059669;
 
+    /* Color de peligro */
     --danger: #ef4444;
+
+    /* Hover del peligro */
     --danger-hover: #dc2626;
 
+    /* Color advertencia */
     --warning: #f59e0b;
+
+    /* Color informativo */
     --info: #3b82f6;
 
+    /* Fondo principal */
     --bg-color: #0f172a;
 
+    /* Fondo transparente tipo glass */
     --panel-bg: rgba(30, 41, 59, 0.7);
 
+    /* Texto principal */
     --text-main: #f8fafc;
+
+    /* Texto secundario */
     --text-muted: #cbd5e1;
 
+    /* Color de bordes */
     --border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* =========================================================
+
+
+/* =========================================
    RESET GENERAL
-========================================================= */
+========================================= */
+
 * {
 
+    /* Incluye padding y border dentro del tamaño */
     box-sizing: border-box;
 
+    /* Elimina márgenes */
     margin: 0;
+
+    /* Elimina padding */
     padding: 0;
 
+    /* Fuente global */
     font-family: 'Outfit', sans-serif;
 }
 
-/* =========================================================
-   BODY PRINCIPAL
-========================================================= */
+
+
+/* =========================================
+   BODY
+========================================= */
+
 body {
 
+    /* Fondo principal */
     background-color: var(--bg-color);
 
-    background-image:
-        radial-gradient(circle at top right,
-            #1e1b4b,
-            #0f172a);
+    /* Degradado del fondo */
+    background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
 
+    /* Color del texto */
     color: var(--text-main);
 
+    /* Altura completa */
     height: 100vh;
 
+    /* Espaciado interno */
     padding: 0.75rem;
 
+    /* Flexbox vertical */
     display: flex;
     flex-direction: column;
 
+    /* Oculta desbordamiento */
     overflow: hidden;
 }
 
-/* =========================================================
+
+
+/* =========================================
    HEADER
-========================================================= */
+========================================= */
+
 header {
 
+    /* Centra el contenido */
     text-align: center;
 
+    /* Margen inferior */
     margin-bottom: 0.5rem;
 
+    /* Animación */
     animation: fadeInDown 0.8s ease-out;
 }
 
+
+
+/* Título principal */
 h1 {
 
+    /* Tamaño */
     font-size: 1.5rem;
 
-    background: linear-gradient(to right,
-            #818cf8,
-            #c084fc);
+    /* Degradado */
+    background: linear-gradient(to right, #818cf8, #c084fc);
 
+    /* Hace visible el degradado */
     -webkit-background-clip: text;
+
+    /* Oculta color real */
     -webkit-text-fill-color: transparent;
 
+    /* Espacio inferior */
     margin-bottom: 0.1rem;
 }
 
+
+
+/* Subtítulo */
 .subtitle {
 
+    /* Color tenue */
     color: var(--text-muted);
 
+    /* Peso */
     font-weight: 300;
 
+    /* Tamaño */
     font-size: 0.75rem;
 }
 
-/* =========================================================
+
+
+/* =========================================
    CONTENEDOR PRINCIPAL
-========================================================= */
+========================================= */
+
 .container {
 
+    /* Grid layout */
     display: grid;
 
+    /* Columnas */
     grid-template-columns: 250px 1fr 280px;
 
+    /* Filas */
+    grid-template-rows: auto auto;
+
+    /* Espacio entre elementos */
     gap: 0.75rem;
 
+    /* Ocupa el espacio restante */
     flex: 1;
+
+    /* Ancho completo */
+    width: 100%;
 }
 
-/* =========================================================
-   PANELES GENERALES
-========================================================= */
+
+
+/* =========================================
+   PANEL BASE
+========================================= */
+
 .panel {
 
+    /* Fondo glassmorphism */
     background: var(--panel-bg);
 
+    /* Blur */
     backdrop-filter: blur(12px);
 
+    /* Compatibilidad Safari */
+    -webkit-backdrop-filter: blur(12px);
+
+    /* Borde */
     border: 1px solid var(--border-color);
 
+    /* Bordes redondeados */
     border-radius: 16px;
 
+    /* Espaciado interno */
     padding: 0.75rem;
 
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.3);
+    /* Sombra */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 
+    /* Transición suave */
     transition: transform 0.3s ease;
 
+    /* Flex vertical */
     display: flex;
     flex-direction: column;
 
+    /* Oculta overflow */
     overflow: hidden;
 }
 
+
+
+/* Hover de panel */
 .panel:hover {
 
+    /* Eleva panel */
     transform: translateY(-2px);
+
+    /* Borde más visible */
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* =========================================================
-   TITULOS DE PANEL
-========================================================= */
+
+
+/* =========================================
+   TÍTULO DE PANEL
+========================================= */
+
 .panel-title {
 
+    /* Tamaño */
     font-size: 0.9rem;
 
+    /* Negrilla */
     font-weight: 600;
 
+    /* Margen */
     margin-bottom: 0.5rem;
 
+    /* Flex */
     display: flex;
+
+    /* Centra vertical */
     align-items: center;
 
+    /* Separación */
     gap: 0.5rem;
 
+    /* Línea inferior */
     border-bottom: 1px solid var(--border-color);
 
+    /* Espacio inferior */
     padding-bottom: 0.25rem;
 }
 
-/* =========================================================
-   PANEL LABORATORIO
-========================================================= */
+
+
+/* =========================================
+   VISTA DEL LABORATORIO
+========================================= */
+
 .lab-view {
 
-    position: relative;
+    /* Posición en grid */
+    grid-column: 2 / 3;
 
+    /* Fila */
+    grid-row: 1 / 2;
+
+    /* Altura mínima */
     min-height: 150px;
 
-    background:
-        rgba(15, 23, 42, 0.6);
+    /* Posición relativa */
+    position: relative;
 
+    /* Fondo */
+    background: rgba(15, 23, 42, 0.6);
+
+    /* Borde punteado */
     border: 2px dashed rgba(255, 255, 255, 0.2);
 
+    /* Bordes redondeados */
     border-radius: 12px;
 
+    /* Flexbox */
     display: flex;
 
+    /* Permite salto */
     flex-wrap: wrap;
 
+    /* Alineación */
     align-content: flex-start;
 
+    /* Separación */
     gap: 8px;
 
+    /* Padding */
     padding: 12px;
 
+    /* Scroll vertical */
     overflow-y: auto;
+
+    /* Oculta scroll horizontal */
+    overflow-x: hidden;
 }
 
-/* =========================================================
-   TÍTULO FLOTANTE
-========================================================= */
-.floating-title {
 
-    width: max-content;
 
-    position: absolute;
-
-    top: 10px;
-    left: 10px;
-
-    border: none;
-
-    z-index: 10;
-
-    background:
-        rgba(15, 23, 42, 0.9);
-
-    padding: 6px 12px;
-
-    border-radius: 15px;
-
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.5);
-
-    font-size: 0.75rem;
-}
-
-/* =========================================================
+/* =========================================
    PUERTAS
-========================================================= */
+========================================= */
+
 .door {
 
+    /* Posición absoluta */
     position: absolute;
 
+    /* Tamaño */
     width: 10px;
     height: 60px;
 
-    top: 50%;
+    /* Color */
+    background: var(--info);
 
+    /* Centrado vertical */
+    top: 50%;
     transform: translateY(-50%);
 
+    /* Bordes */
     border-radius: 5px;
 }
 
-/* Entrada */
+
+
+/* Puerta entrada */
 .door-entry {
 
     left: 0;
 
     background: var(--success);
 
-    box-shadow:
-        0 0 10px var(--success);
+    box-shadow: 0 0 10px var(--success);
 }
 
-/* Salida */
+
+
+/* Puerta salida */
 .door-exit {
 
     right: 0;
 
     background: var(--warning);
 
-    box-shadow:
-        0 0 10px var(--warning);
+    box-shadow: 0 0 10px var(--warning);
 }
 
-/* =========================================================
-   CONTENEDOR ESTUDIANTES
-========================================================= */
-#studentsContainer {
 
-    margin-top: 45px;
 
-    display: flex;
+/* =========================================
+   TARJETA ESTUDIANTE
+========================================= */
 
-    flex-wrap: wrap;
-
-    gap: 8px;
-
-    width: 100%;
-
-    align-content: flex-start;
-}
-
-/* =========================================================
-   TARJETAS ESTUDIANTES
-========================================================= */
 .student {
 
+    /* Tamaño */
     width: 80px;
     height: 90px;
 
+    /* Flex vertical */
     display: flex;
-
     flex-direction: column;
 
+    /* Centrado */
     align-items: center;
     justify-content: center;
 
+    /* Separación */
     gap: 4px;
 
-    background:
-        linear-gradient(135deg,
-            rgba(99, 102, 241, 0.15),
-            rgba(139, 92, 246, 0.15));
+    /* Animación */
+    animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 
+    /* Sombra */
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+
+    /* Fondo degradado */
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.15),
+        rgba(139, 92, 246, 0.15)
+    );
+
+    /* Bordes */
     border-radius: 16px;
 
+    /* Espaciado */
     padding: 8px;
 
+    /* Tamaño mínimo */
+    min-width: 80px;
+
+    /* Texto centrado */
     text-align: center;
 
-    border:
-        2px solid rgba(129, 140, 248, 0.3);
+    /* Borde */
+    border: 2px solid rgba(129, 140, 248, 0.3);
 
+    /* Transición */
     transition: all 0.3s ease;
 
+    /* Relativo */
     position: relative;
 
+    /* Oculta overflow */
     overflow: hidden;
-
-    animation:
-        slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+
 
 /* Hover estudiante */
 .student:hover {
 
-    transform:
-        translateY(-6px)
-        scale(1.05);
+    /* Eleva y agranda */
+    transform: translateY(-6px) scale(1.05);
 
-    box-shadow:
-        0 0 30px rgba(129, 140, 248, 0.4);
+    /* Borde más fuerte */
+    border-color: rgba(129, 140, 248, 0.8);
+
+    /* Fondo más intenso */
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.25),
+        rgba(139, 92, 246, 0.25)
+    );
+
+    /* Glow */
+    box-shadow: 0 0 30px rgba(129, 140, 248, 0.4);
 }
 
-/* =========================================================
-   AVATAR ESTUDIANTE
-========================================================= */
-.student-avatar {
 
-    width: 40px;
-    height: 40px;
 
-    border-radius: 12px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 1.1rem;
-
-    font-weight: 800;
-
-    color: white;
-
-    box-shadow:
-        0 4px 12px rgba(129, 140, 248, 0.4);
-}
-
-/* =========================================================
-   TEXO ESTUDIANTE
-========================================================= */
-.student-name {
-
-    font-size: 0.65rem;
-
-    color: #cbd5e1;
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-}
-
-.student-id {
-
-    font-size: 0.55rem;
-
-    color: #94a3b8;
-}
-
-/* =========================================================
+/* =========================================
    BOTONES
-========================================================= */
+========================================= */
+
 .btn {
 
+    /* Espaciado */
     padding: 0.6rem;
 
+    /* Sin borde */
     border: none;
 
+    /* Bordes redondos */
     border-radius: 8px;
 
+    /* Texto */
     font-size: 0.75rem;
-
     font-weight: 600;
-
     color: white;
 
+    /* Cursor */
     cursor: pointer;
 
+    /* Transición */
     transition: all 0.2s ease;
 
+    /* Flex */
     display: flex;
-
     justify-content: center;
     align-items: center;
 
+    /* Separación */
     gap: 0.5rem;
 
+    /* Mayúsculas */
     text-transform: uppercase;
 
+    /* Espaciado letras */
     letter-spacing: 0.5px;
 }
 
-/* CLICK */
+
+
+/* Click */
 .btn:active {
 
     transform: scale(0.98);
 }
 
-/* BOTON ENTRADA */
+
+
+/* Botón entrada */
 .btn-enter {
 
-    background:
-        linear-gradient(135deg,
-            var(--success),
-            var(--success-hover));
+    background: linear-gradient(
+        135deg,
+        var(--success),
+        var(--success-hover)
+    );
 
-    box-shadow:
-        0 4px 15px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
-/* BOTON SALIDA */
+
+
+/* Botón salida */
 .btn-exit {
 
-    background:
-        linear-gradient(135deg,
-            var(--info),
-            #2563eb);
+    background: linear-gradient(
+        135deg,
+        var(--info),
+        #2563eb
+    );
 
-    box-shadow:
-        0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
-/* BOTON RESET */
+
+
+/* Botón reset */
 .btn-reset {
 
-    background:
-        linear-gradient(135deg,
-            var(--danger),
-            var(--danger-hover));
+    background: linear-gradient(
+        135deg,
+        var(--danger),
+        var(--danger-hover)
+    );
 
-    box-shadow:
-        0 4px 15px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 
-/* =========================================================
-   BARRA PROGRESO
-========================================================= */
+
+
+/* =========================================
+   BARRA DE PROGRESO
+========================================= */
+
 .progress-container {
 
+    /* Ancho */
     width: 100%;
 
+    /* Altura */
     height: 12px;
 
-    background:
-        rgba(0, 0, 0, 0.3);
+    /* Fondo */
+    background: rgba(0,0,0,0.3);
 
+    /* Bordes */
     border-radius: 8px;
 
+    /* Oculta exceso */
     overflow: hidden;
-
-    margin-top: 0.3rem;
 }
 
+
+
+/* Barra dinámica */
 .progress-bar {
 
+    /* Altura completa */
     height: 100%;
 
+    /* Empieza vacía */
     width: 0%;
 
-    background:
-        linear-gradient(90deg,
-            var(--info),
-            var(--primary));
+    /* Degradado */
+    background: linear-gradient(
+        90deg,
+        var(--info),
+        var(--primary)
+    );
 
-    transition: width 0.4s ease;
+    /* Transición */
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* =========================================================
-   REGISTRO EVENTOS
-========================================================= */
+
+
+/* =========================================
+   LOG DE EVENTOS
+========================================= */
+
 .event-log {
 
-    background:
-        rgba(0, 0, 0, 0.3);
+    /* Fondo */
+    background: rgba(0,0,0,0.3);
 
+    /* Bordes */
     border-radius: 12px;
 
+    /* Espaciado */
     padding: 0.6rem;
 
+    /* Altura fija */
     height: 140px;
 
+    /* Scroll */
     overflow-y: auto;
 
-    font-family:
-        'Courier New',
-        Courier,
-        monospace;
+    /* Fuente tipo consola */
+    font-family: 'Courier New', Courier, monospace;
 
+    /* Tamaño */
     font-size: 0.7rem;
 
+    /* Flex vertical */
     display: flex;
-
     flex-direction: column;
 
+    /* Separación */
     gap: 0.25rem;
 }
 
-/* Cada evento */
+
+
+/* Entrada del log */
 .log-entry {
 
-    border-bottom:
-        1px dashed rgba(255, 255, 255, 0.1);
+    /* Línea inferior */
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
 
+    /* Padding */
     padding: 0.3rem;
 
-    border-radius: 4px;
-
-    background:
-        rgba(255, 255, 255, 0.02);
+    /* Animación */
+    animation: fadeInDown 0.3s ease-out;
 }
 
-/* =========================================================
-   MODALES
-========================================================= */
-.modal {
 
-    position: fixed;
 
-    inset: 0;
-
-    display: none;
-
-    align-items: center;
-    justify-content: flex-end;
-
-    background:
-        rgba(2, 6, 23, 0.5);
-
-    z-index: 9999;
-
-    padding: 2rem;
-
-    backdrop-filter: blur(4px);
-}
-
-/* Modal activo */
-.modal.active {
-
-    display: flex;
-}
-
-/* Caja modal */
-.modal-box {
-
-    width: 560px;
-
-    max-width: 90%;
-
-    background:
-        linear-gradient(135deg,
-            rgba(30, 41, 59, 0.95),
-            rgba(15, 23, 42, 0.98));
-
-    border-radius: 20px;
-
-    padding: 2.5rem;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 1.5rem;
-}
-
-/* =========================================================
-   INPUTS MODAL
-========================================================= */
-.modal-input {
-
-    width: 100%;
-
-    padding: 1.2rem 1.5rem;
-
-    border-radius: 12px;
-
-    border:
-        2px solid rgba(99, 102, 241, 0.4);
-
-    background:
-        rgba(15, 23, 42, 0.8);
-
-    color: white;
-
-    font-size: 1.1rem;
-}
-
-/* =========================================================
-   BOTONES MODAL
-========================================================= */
-.modal-btn {
-
-    flex: 1;
-
-    padding: 1.2rem 1.8rem;
-
-    border-radius: 12px;
-
-    border: none;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: all 0.3s ease;
-}
-
-/* Confirmar */
-.modal-btn.confirm {
-
-    background:
-        linear-gradient(135deg,
-            #10b981,
-            #059669);
-
-    color: white;
-}
-
-/* Cancelar */
-.modal-btn.cancel {
-
-    background:
-        linear-gradient(135deg,
-            rgba(99, 102, 241, 0.2),
-            rgba(139, 92, 246, 0.2));
-
-    color: white;
-}
-
-/* =========================================================
+/* =========================================
    ANIMACIONES
-========================================================= */
+========================================= */
 
-/* Entrada */
-@keyframes slideInUp {
-
-    0% {
-
-        opacity: 0;
-
-        transform:
-            translateY(40px)
-            scale(0.8);
-    }
-
-    100% {
-
-        opacity: 1;
-
-        transform:
-            translateY(0)
-            scale(1);
-    }
-}
-
-/* Fade */
+/* Entrada desde arriba */
 @keyframes fadeInDown {
 
     from {
 
         opacity: 0;
-
         transform: translateY(-10px);
+
     }
 
     to {
 
         opacity: 1;
-
         transform: translateY(0);
+
     }
 }
 
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-::-webkit-scrollbar {
 
-    width: 8px;
+
+/* Entrada estudiante */
+@keyframes slideInUp {
+
+    0% {
+
+        opacity: 0;
+        transform: translateY(40px) scale(0.8);
+
+    }
+
+    50% {
+
+        transform: scale(1.08);
+
+    }
+
+    100% {
+
+        opacity: 1;
+        transform: translateY(0) scale(1);
+
+    }
 }
 
-::-webkit-scrollbar-track {
 
-    background:
-        rgba(0, 0, 0, 0.2);
-}
 
-::-webkit-scrollbar-thumb {
-
-    background: var(--primary);
-
-    border-radius: 4px;
-}
-
-/* =========================================================
+/* =========================================
    RESPONSIVE
-========================================================= */
+========================================= */
+
 @media (max-width: 768px) {
 
     .container {
 
+        /* Una sola columna */
         grid-template-columns: 1fr;
+    }
+
+    .lab-view {
+
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .panel:first-child {
+
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .bottom-section {
+
+        grid-column: 1 / -1;
+        grid-row: auto;
     }
 }
