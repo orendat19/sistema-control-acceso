@@ -1,623 +1,915 @@
-// =====================================
-// VARIABLES GLOBALES DEL SISTEMA
-// =====================================
+// ======================================================
+// SISTEMA DE CONTROL DE ACCESO - app.js
+// Archivo JavaScript principal
+// Aquí se controla toda la lógica y funcionamiento
+// interactivo del laboratorio.
+// ======================================================
 
-// Cantidad actual de estudiantes
+
+
+// ======================================================
+// VARIABLES DE ESTADO DEL SISTEMA
+// ======================================================
+
+// Cantidad actual de estudiantes dentro del laboratorio
 let currentStudents = 0;
 
-// Capacidad máxima del laboratorio
+// Capacidad máxima permitida
 let maxCapacity = 20;
 
-// Total histórico de entradas
+// Contador total de entradas registradas
 let totalEntradas = 0;
 
-// Total histórico de salidas
+// Contador total de salidas registradas
 let totalSalidas = 0;
 
 
-// =====================================
-// ELEMENTOS DEL DOM
-// =====================================
 
-// Botones principales
-const btnEnter =
-    document.getElementById('btnEnter');
+// ======================================================
+// LISTA DE EMOJIS PARA REPRESENTAR ESTUDIANTES
+// ======================================================
 
-const btnExit =
-    document.getElementById('btnExit');
-
-const btnReset =
-    document.getElementById('btnReset');
-
-
-// Contenedor visual estudiantes
-const studentsContainer =
-    document.getElementById('studentsContainer');
-
-
-// Contadores visuales
-const countEntradas =
-    document.getElementById('countEntradas');
-
-const countSalidas =
-    document.getElementById('countSalidas');
+const studentEmojis = [
+    '👨‍🎓',
+    '👩‍🎓',
+    '👨‍💻',
+    '👩‍💻',
+    '🧑‍🎓',
+    '🧑‍💻',
+    '🕵️‍♂️',
+    '🕵️‍♀️',
+    '🦸‍♂️',
+    '🦸‍♀️',
+    '🥷',
+    '🧑‍🔬'
+];
 
 
-// Espacios disponibles
-const freeSpaces =
-    document.getElementById('freeSpaces');
 
+// ======================================================
+// REFERENCIAS A ELEMENTOS DEL DOM
+// ======================================================
+
+// Inputs y botones principales
+const maxCapacityInput = document.getElementById('maxCapacity');
+const btnEnter = document.getElementById('btnEnter');
+const btnExit = document.getElementById('btnExit');
+const btnReset = document.getElementById('btnReset');
+
+// Contenedor visual de estudiantes
+const studentsContainer = document.getElementById('studentsContainer');
+
+// Indicadores de estado
+const statusIndicator = document.getElementById('statusIndicator');
+const statusLed = document.getElementById('statusLed');
+const statusText = document.getElementById('statusText');
 
 // Barra de ocupación
-const progressBar =
-    document.getElementById('progressBar');
+const progressBar = document.getElementById('progressBar');
+const occupancyPercent = document.getElementById('occupancyPercent');
 
-const occupancyPercent =
-    document.getElementById('occupancyPercent');
+// Contadores
+const countEntradas = document.getElementById('countEntradas');
+const countSalidas = document.getElementById('countSalidas');
+const freeSpacesText = document.getElementById('freeSpaces');
 
-
-// Indicadores estado
-const statusText =
-    document.getElementById('statusText');
-
-const statusLed =
-    document.getElementById('statusLed');
+// Registro de eventos
+const eventLog = document.getElementById('eventLog');
 
 
-// Input capacidad
-const maxCapacityInput =
-    document.getElementById('maxCapacity');
+
+// ======================================================
+// COMPUERTAS LÓGICAS
+// ======================================================
+
+const gateCapacity = document.getElementById('gateCapacity');
+const gateEntry = document.getElementById('gateEntry');
+const gateActivity = document.getElementById('gateActivity');
+const gateAlert = document.getElementById('gateAlert');
+const gateEmpty = document.getElementById('gateEmpty');
+const gateIntermediate = document.getElementById('gateIntermediate');
+const gateExtreme = document.getElementById('gateExtreme');
 
 
-// =====================================
-// ELEMENTOS MODAL
-// =====================================
 
-// Modal identificación
-const identModal =
-    document.getElementById('identModal');
+// ======================================================
+// ELEMENTOS DE LOS MODALES
+// ======================================================
+
+let pendingEntryCallback = null;
+let selectedStudentIdForExit = null;
+
+// Modal de entrada
+const identModal = document.getElementById('identModal');
+
+// Modal de salida
+const exitModal = document.getElementById('exitModal');
+
+// Input del nombre
+const studentNameInput = document.getElementById('studentNameInput');
+
+// Lista de estudiantes
+const studentsList = document.getElementById('studentsList');
+
+// Botones del modal
+const modalConfirm = document.getElementById('modalConfirm');
+const modalCancel = document.getElementById('modalCancel');
+const exitModalCancel = document.getElementById('exitModalCancel');
 
 
-// Input nombre estudiante
-const studentNameInput =
-    document.getElementById('studentNameInput');
 
+// ======================================================
+// MOSTRAR MODAL DE IDENTIFICACIÓN
+// ======================================================
 
-// Botones modal
-const modalConfirm =
-    document.getElementById('modalConfirm');
+function showIdentifyModal(callback) {
 
-const modalCancel =
-    document.getElementById('modalCancel');
+    // Si no existe el modal, usar prompt clásico
+    if (!identModal) {
 
+        let name = prompt(
+            'Ingrese nombre o ID del estudiante'
+        );
 
-// =====================================
-// MOSTRAR MODAL
-// =====================================
+        // Si cancela, generar nombre anónimo
+        if (name === null) {
+            name = `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
+        }
 
-/**
- * Abre el modal de identificación
- */
-function showIdentifyModal() {
+        // Si está vacío, generar nombre automático
+        name = name.trim() || `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
 
+        callback(name);
+
+        return;
+    }
+
+    // Guardar función callback
+    pendingEntryCallback = callback;
+
+    // Mostrar modal
     identModal.classList.add('active');
 
-    // Enfoca automáticamente el input
-    studentNameInput.focus();
+    // Desactivar botón entrada
+    btnEnter.disabled = true;
+
+    // Dar foco al input
+    setTimeout(() => {
+        studentNameInput.focus();
+    }, 80);
 }
 
 
-// =====================================
-// CERRAR MODAL
-// =====================================
 
-/**
- * Cierra el modal y limpia el input
- */
+// ======================================================
+// CERRAR MODAL DE IDENTIFICACIÓN
+// ======================================================
+
 function closeIdentifyModal() {
 
     identModal.classList.remove('active');
 
-    studentNameInput.value = '';
+    pendingEntryCallback = null;
+
+    btnEnter.disabled = currentStudents >= maxCapacity;
 }
 
 
-// =====================================
-// GENERAR COLOR ALEATORIO
-// =====================================
 
-/**
- * Genera colores aleatorios para
- * diferenciar visualmente estudiantes
- */
-function generateRandomColor() {
+// ======================================================
+// CONFIRMAR ENTRADA
+// ======================================================
 
-    const colors = [
+function onModalConfirm() {
 
-        '#6366f1',
-        '#8b5cf6',
-        '#06b6d4',
-        '#10b981',
-        '#f59e0b',
-        '#ef4444',
-        '#ec4899'
+    let name = studentNameInput.value.trim();
 
-    ];
+    // Si no escribe nada
+    if (!name) {
+        name = `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
+    }
 
-    return colors[
-        Math.floor(
-            Math.random() * colors.length
-        )
-    ];
+    // Ejecutar callback
+    if (pendingEntryCallback) {
+        pendingEntryCallback(name);
+    }
+
+    closeIdentifyModal();
 }
 
 
-// =====================================
+
+// ======================================================
+// CANCELAR ENTRADA
+// ======================================================
+
+function onModalCancel() {
+
+    logEvent('Ingreso cancelado por el operador', 'reset');
+
+    closeIdentifyModal();
+}
+
+
+
+// ======================================================
+// EVENTOS DEL MODAL
+// ======================================================
+
+modalConfirm.addEventListener('click', onModalConfirm);
+
+modalCancel.addEventListener('click', onModalCancel);
+
+// Detectar teclas
+studentNameInput.addEventListener('keydown', (e) => {
+
+    if (e.key === 'Enter') {
+        onModalConfirm();
+    }
+
+    if (e.key === 'Escape') {
+        onModalCancel();
+    }
+});
+
+
+
+// ======================================================
+// MOSTRAR MODAL DE SALIDA
+// ======================================================
+
+function showExitModal() {
+
+    selectedStudentIdForExit = null;
+
+    populateStudentsList();
+
+    exitModal.classList.add('active');
+
+    btnExit.disabled = true;
+}
+
+
+
+// ======================================================
+// CERRAR MODAL DE SALIDA
+// ======================================================
+
+function closeExitModal() {
+
+    exitModal.classList.remove('active');
+
+    selectedStudentIdForExit = null;
+
+    btnExit.disabled = currentStudents <= 0;
+}
+
+
+
+// ======================================================
+// LLENAR LISTA DE ESTUDIANTES
+// ======================================================
+
+function populateStudentsList() {
+
+    studentsList.innerHTML = '';
+
+    // Obtener estudiantes activos
+    const students = studentsContainer.querySelectorAll('.student:not(.leaving)');
+
+    // Si no hay estudiantes
+    if (students.length === 0) {
+
+        studentsList.innerHTML = `
+            <div style="text-align:center; color:#94a3b8; padding:2rem;">
+                No hay estudiantes en el laboratorio
+            </div>
+        `;
+
+        return;
+    }
+
+    // Crear tarjeta para cada estudiante
+    students.forEach((studentEl) => {
+
+        const name = studentEl.dataset.name || 'Estudiante';
+        const id = studentEl.id;
+
+        const avatarDiv = studentEl.querySelector('.student-avatar');
+
+        const initials = avatarDiv?.textContent || '?';
+
+        const gradient = avatarDiv?.style.background ||
+            'linear-gradient(135deg, #818cf8, #c084fc)';
+
+        // Crear tarjeta visual
+        const itemEl = document.createElement('div');
+
+        itemEl.className = 'student-item';
+
+        itemEl.dataset.studentId = id;
+
+        itemEl.innerHTML = `
+            <div class="student-item-avatar" style="background:${gradient};">
+                ${initials}
+            </div>
+
+            <div class="student-item-info">
+                <div class="student-item-name">${name}</div>
+                <div class="student-item-id">${id}</div>
+            </div>
+
+            <div class="student-item-checkbox">✓</div>
+        `;
+
+        // Seleccionar estudiante
+        itemEl.addEventListener('click', () => {
+
+            studentsList
+                .querySelectorAll('.student-item')
+                .forEach(s => s.classList.remove('selected'));
+
+            itemEl.classList.add('selected');
+
+            selectedStudentIdForExit = id;
+        });
+
+        studentsList.appendChild(itemEl);
+    });
+
+    // Botón confirmar salida
+    const confirmBtn = document.createElement('button');
+
+    confirmBtn.className = 'modal-btn confirm';
+
+    confirmBtn.style.marginTop = '1rem';
+
+    confirmBtn.innerHTML = '<span>✓ Confirmar Salida</span>';
+
+    confirmBtn.addEventListener('click', () => {
+
+        if (selectedStudentIdForExit) {
+
+            removeStudentById(selectedStudentIdForExit);
+
+            closeExitModal();
+        }
+    });
+
+    studentsList.appendChild(confirmBtn);
+}
+
+
+
+// ======================================================
+// ELIMINAR ESTUDIANTE POR ID
+// ======================================================
+
+function removeStudentById(studentId) {
+
+    const studentEl = document.getElementById(studentId);
+
+    if (!studentEl) return;
+
+    const name = studentEl.dataset.name || 'Estudiante';
+
+    // Animación salida
+    studentEl.classList.add('leaving');
+
+    setTimeout(() => {
+
+        if (studentsContainer.contains(studentEl)) {
+            studentsContainer.removeChild(studentEl);
+        }
+
+    }, 600);
+
+    // Actualizar contadores
+    currentStudents = Math.max(0, currentStudents - 1);
+
+    totalSalidas++;
+
+    logEvent(`Estudiante "${name}" salió del laboratorio`, 'out');
+
+    triggerGateAnimation('exit');
+
+    updateUI();
+}
+
+
+
+// ======================================================
+// BOTÓN CANCELAR SALIDA
+// ======================================================
+
+exitModalCancel.addEventListener('click', closeExitModal);
+
+
+
+// ======================================================
 // AGREGAR ESTUDIANTE
-// =====================================
+// ======================================================
 
-/**
- * Agrega estudiante al laboratorio
- */
 function addStudentByName(name) {
 
-    // Verificar capacidad máxima
+    // Validar capacidad
     if (currentStudents >= maxCapacity) {
 
-        alert('El laboratorio está lleno');
+        logEvent(
+            'Intento de ingreso bloqueado: laboratorio lleno',
+            'full'
+        );
 
         return;
     }
 
     // Incrementar contadores
     currentStudents++;
-
     totalEntradas++;
-
-    // Crear elemento estudiante
-    const studentEl =
-        document.createElement('div');
-
-    // Clase CSS estudiante
-    studentEl.className = 'student';
-
-    // ID único estudiante
-    studentEl.id =
-        `student-${Date.now()}`;
 
     // Obtener iniciales
     const initials = name
         .split(' ')
-        .map(word => word[0])
+        .map(word => word[0]?.toUpperCase() || '')
         .join('')
-        .substring(0, 2)
-        .toUpperCase();
+        .substring(0, 2) || '?';
 
-    // Generar color avatar
-    const randomColor =
-        generateRandomColor();
+    // Colores disponibles
+    const gradients = [
+        'linear-gradient(135deg, #818cf8, #c084fc)',
+        'linear-gradient(135deg, #06b6d4, #3b82f6)',
+        'linear-gradient(135deg, #10b981, #14b8a6)',
+        'linear-gradient(135deg, #f59e0b, #ec4899)',
+        'linear-gradient(135deg, #8b5cf6, #6366f1)',
+        'linear-gradient(135deg, #ef4444, #f97316)',
+        'linear-gradient(135deg, #14b8a6, #06b6d4)',
+        'linear-gradient(135deg, #ec4899, #f43f5e)'
+    ];
 
-    // Estructura visual estudiante
-    studentEl.innerHTML = `
+    const gradientIndex = (totalEntradas - 1) % gradients.length;
 
-        <div
-            class="student-avatar"
-            style="background:${randomColor}"
-        >
-            ${initials}
-        </div>
+    const gradient = gradients[gradientIndex];
 
-        <div class="student-name">
-            ${name.substring(0, 14)}
-        </div>
+    // Crear tarjeta estudiante
+    const studentEl = document.createElement('div');
 
-    `;
+    studentEl.className = 'student entering';
 
-    // Posición aleatoria en laboratorio
-    studentEl.style.position =
-        'absolute';
+    studentEl.id = `student-${totalEntradas}`;
 
-    studentEl.style.left =
-        Math.random() * 75 + '%';
+    studentEl.dataset.name = name;
 
-    studentEl.style.top =
-        Math.random() * 70 + '%';
+    // Avatar
+    const avatarDiv = document.createElement('div');
 
-    // Insertar estudiante
-    studentsContainer.appendChild(
-        studentEl
-    );
+    avatarDiv.className = 'student-avatar';
 
-    // Activar efecto visual
-    flashGate();
+    avatarDiv.textContent = initials;
+
+    avatarDiv.style.background = gradient;
+
+    // Nombre
+    const nameDiv = document.createElement('div');
+
+    nameDiv.className = 'student-name';
+
+    nameDiv.textContent = name.substring(0, 14);
+
+    nameDiv.title = name;
+
+    // ID visual
+    const idDiv = document.createElement('div');
+
+    idDiv.className = 'student-id';
+
+    idDiv.textContent = `#${totalEntradas}`;
+
+    // Insertar elementos
+    studentEl.appendChild(avatarDiv);
+    studentEl.appendChild(nameDiv);
+    studentEl.appendChild(idDiv);
+
+    studentsContainer.appendChild(studentEl);
+
+    // Registrar evento
+    logEvent(`Estudiante "${name}" ingresó al laboratorio`, 'in');
+
+    // Activar animación lógica
+    triggerGateAnimation('entry');
 
     // Actualizar interfaz
     updateUI();
 
-    // Registrar evento
-    logEvent(
-        `${name} ingresó al laboratorio`
-    );
+    // Verificar si quedó lleno
+    if (currentStudents === maxCapacity) {
+
+        logEvent('¡ALERTA: LABORATORIO LLENO!', 'full');
+
+        triggerGateAnimation('full');
+    }
 }
 
 
-// =====================================
-// ELIMINAR ESTUDIANTE
-// =====================================
 
-/**
- * Elimina el último estudiante
- * agregado al laboratorio
- */
-function removeStudent() {
+// ======================================================
+// INICIALIZACIÓN DEL SISTEMA
+// ======================================================
 
-    // Obtener todos los estudiantes
-    const students =
-        document.querySelectorAll(
-            '.student'
-        );
+updateUI();
 
-    // Validar existencia
-    if (students.length === 0) {
+logEvent('Sistema inicializado y listo', 'reset');
 
-        return;
+
+
+// ======================================================
+// EVENTOS PRINCIPALES
+// ======================================================
+
+// Cambio de capacidad máxima
+maxCapacityInput.addEventListener('change', (e) => {
+
+    let val = parseInt(e.target.value);
+
+    // Validar mínimo
+    if (val < 1 || isNaN(val)) {
+
+        val = 1;
+
+        e.target.value = 1;
     }
 
-    // Eliminar último estudiante
-    students[
-        students.length - 1
-    ].remove();
+    maxCapacity = val;
+
+    // Si la nueva capacidad es menor
+    if (currentStudents > maxCapacity) {
+
+        const diff = currentStudents - maxCapacity;
+
+        // Expulsar estudiantes sobrantes
+        for (let i = 0; i < diff; i++) {
+
+            setTimeout(() => {
+
+                removeStudentLogic(true);
+
+            }, i * 150);
+        }
+
+    } else {
+
+        updateUI();
+    }
+
+    logEvent(`Capacidad máxima actualizada a ${maxCapacity}`, 'reset');
+});
+
+
+
+// ======================================================
+// BOTÓN ENTRADA
+// ======================================================
+
+btnEnter.addEventListener('click', () => {
+
+    if (currentStudents < maxCapacity) {
+
+        studentNameInput.value = '';
+
+        showIdentifyModal((name) => addStudentByName(name));
+
+    } else {
+
+        logEvent(
+            'Intento de ingreso bloqueado: laboratorio lleno',
+            'full'
+        );
+    }
+});
+
+
+
+// ======================================================
+// BOTÓN SALIDA
+// ======================================================
+
+btnExit.addEventListener('click', () => {
+
+    if (currentStudents > 0) {
+
+        showExitModal();
+    }
+});
+
+
+
+// ======================================================
+// BOTÓN REINICIAR
+// ======================================================
+
+btnReset.addEventListener('click', () => {
+
+    currentStudents = 0;
+    totalEntradas = 0;
+    totalSalidas = 0;
+
+    // Obtener todos los estudiantes
+    const allStudents = studentsContainer.querySelectorAll('.student');
+
+    // Animar salida
+    allStudents.forEach((student, index) => {
+
+        setTimeout(() => {
+
+            student.classList.add('leaving');
+
+            setTimeout(() => {
+
+                if (studentsContainer.contains(student)) {
+
+                    studentsContainer.removeChild(student);
+                }
+
+            }, 400);
+
+        }, index * 50);
+    });
+
+    logEvent('Reinicio total del laboratorio', 'reset');
+
+    setTimeout(updateUI, allStudents.length * 50 + 100);
+});
+
+
+
+// ======================================================
+// ELIMINAR ESTUDIANTE
+// ======================================================
+
+function removeStudentLogic(isSystemEviction = false) {
+
+    const students =
+        studentsContainer.querySelectorAll('.student:not(.leaving)');
+
+    if (students.length === 0) return;
+
+    const lastStudent = students[students.length - 1];
+
+    const name =
+        lastStudent.dataset.name ||
+        lastStudent.textContent ||
+        'Estudiante';
+
+    // Animación salida
+    lastStudent.classList.add('leaving');
+
+    setTimeout(() => {
+
+        if (studentsContainer.contains(lastStudent)) {
+
+            studentsContainer.removeChild(lastStudent);
+        }
+
+    }, 600);
 
     // Actualizar contadores
-    currentStudents--;
+    currentStudents = Math.max(0, currentStudents - 1);
 
-    totalSalidas++;
-
-    // Activar efecto visual
-    flashGate();
-
-    // Actualizar interfaz
-    updateUI();
+    if (!isSystemEviction) {
+        totalSalidas++;
+    }
 
     // Registrar evento
-    logEvent(
-        'Un estudiante salió del laboratorio'
-    );
+    if (!isSystemEviction) {
+
+        logEvent(`Estudiante "${name}" salió del laboratorio`, 'out');
+
+    } else {
+
+        logEvent(
+            `Se liberó espacio: ${name} removido por ajuste de capacidad`,
+            'reset'
+        );
+    }
+
+    updateUI();
 }
 
 
-// =====================================
-// ACTUALIZAR INTERFAZ
-// =====================================
 
-/**
- * Actualiza todos los elementos
- * visuales del sistema
- */
+// ======================================================
+// ACTUALIZAR INTERFAZ
+// ======================================================
+
 function updateUI() {
 
     // Actualizar contadores
-    countEntradas.textContent =
-        totalEntradas;
+    countEntradas.textContent = totalEntradas;
 
-    countSalidas.textContent =
-        totalSalidas;
+    countSalidas.textContent = totalSalidas;
 
-    // Calcular espacios libres
-    const libres =
-        maxCapacity - currentStudents;
+    const free = maxCapacity - currentStudents;
 
-    freeSpaces.textContent =
-        libres;
+    freeSpacesText.textContent = free;
 
-    // Calcular ocupación
+    // Calcular porcentaje
     const percent = Math.round(
-
-        (
-            currentStudents /
-            maxCapacity
-        ) * 100
-
+        (currentStudents / maxCapacity) * 100
     );
 
-    // Actualizar barra progreso
-    progressBar.style.width =
-        `${percent}%`;
+    // Barra progreso
+    progressBar.style.width = `${percent}%`;
 
-    // Actualizar porcentaje
-    occupancyPercent.textContent =
-        `${percent}%`;
+    occupancyPercent.textContent = `${percent}%`;
 
-    // Desactivar salida si vacío
-    btnExit.disabled =
-        currentStudents <= 0;
+    // Reiniciar estados visuales
+    statusLed.classList.remove('full');
+    progressBar.classList.remove('full');
+    statusIndicator.classList.remove('full-alert');
 
-    // Desactivar entrada si lleno
-    btnEnter.disabled =
-        currentStudents >= maxCapacity;
-
-    // =================================
-    // ACTUALIZAR ESTADO VISUAL
-    // =================================
-
-    // Laboratorio vacío
+    // Estados del laboratorio
     if (currentStudents === 0) {
 
-        statusText.textContent =
-            'Vacío';
+        statusText.textContent = 'Vacío';
 
-        statusLed.style.background =
-            '#64748b';
+        statusLed.style.background = '#64748b';
 
+        statusLed.style.boxShadow = 'none';
+
+        occupancyPercent.style.color = 'var(--text-muted)';
+
+    } else if (currentStudents === maxCapacity) {
+
+        statusText.textContent = 'SALÓN LLENO';
+
+        statusLed.classList.add('full');
+
+        progressBar.classList.add('full');
+
+        statusIndicator.classList.add('full-alert');
+
+        statusLed.style.background = 'var(--danger)';
+
+        occupancyPercent.style.color = 'var(--danger)';
+
+    } else if (percent >= 80) {
+
+        statusText.textContent = 'Casi lleno';
+
+        statusLed.style.background = 'var(--warning)';
+
+        statusLed.style.boxShadow = '0 0 10px var(--warning)';
+
+        occupancyPercent.style.color = 'var(--warning)';
+
+    } else {
+
+        statusText.textContent = 'Con espacio';
+
+        statusLed.style.background = 'var(--success)';
+
+        statusLed.style.boxShadow = '0 0 10px var(--success)';
+
+        occupancyPercent.style.color = 'var(--success)';
     }
 
-    // Laboratorio lleno
-    else if (
-        currentStudents >= maxCapacity
-    ) {
+    // Activar/desactivar botones
+    btnEnter.disabled = currentStudents >= maxCapacity;
 
-        statusText.textContent =
-            'Lleno';
+    btnExit.disabled = currentStudents <= 0;
 
-        statusLed.style.background =
-            '#ef4444';
-
-    }
-
-    // Laboratorio activo
-    else {
-
-        statusText.textContent =
-            'Activo';
-
-        statusLed.style.background =
-            '#10b981';
-    }
+    // Actualizar compuertas
+    updateStaticGates();
 }
 
 
-// =====================================
-// REGISTRO DE EVENTOS
-// =====================================
 
-/**
- * Muestra logs del sistema
- * en consola
- */
-function logEvent(message) {
+// ======================================================
+// ACTUALIZAR COMPUERTAS LÓGICAS
+// ======================================================
 
-    console.log(
+function updateStaticGates() {
 
-        `[LOG ${new Date()
-            .toLocaleTimeString()}]
-            ${message}`
+    // NOT -> hay espacio disponible
+    toggleGateLed(
+        gateCapacity,
+        currentStudents < maxCapacity
+    );
 
+    // NOR -> laboratorio vacío
+    toggleGateLed(
+        gateEmpty,
+        currentStudents === 0
+    );
+
+    // FULL -> laboratorio lleno
+    toggleGateLed(
+        gateAlert,
+        currentStudents === maxCapacity
     );
 }
 
 
-// =====================================
-// EFECTO VISUAL LABORATORIO
-// =====================================
 
-/**
- * Genera efecto visual al
- * entrar o salir estudiante
- */
-function flashGate() {
+// ======================================================
+// ENCENDER/APAGAR COMPUERTAS
+// ======================================================
 
-    // Obtener laboratorio
-    const labView =
-        document.getElementById(
-            'labView'
-        );
+function toggleGateLed(gateElement, isOn) {
 
-    // Activar brillo temporal
-    labView.style.boxShadow =
-        '0 0 25px rgba(99,102,241,0.8)';
+    if (!gateElement) return;
 
-    // Eliminar brillo después
-    setTimeout(() => {
+    const led =
+        gateElement.querySelector('.gate-dot.out') ||
+        gateElement.querySelector('.gate-dot') ||
+        gateElement.querySelector('.legend-dot');
 
-        labView.style.boxShadow =
-            'none';
+    gateElement.classList.toggle('active', !!isOn);
 
-    }, 300);
+    if (!led) return;
+
+    led.classList.toggle('on', !!isOn);
 }
 
 
-// =====================================
-// CAMBIO CAPACIDAD
-// =====================================
 
-/**
- * Detecta cambios en la
- * capacidad máxima
- */
-maxCapacityInput.addEventListener(
+// ======================================================
+// ACTIVAR ANIMACIÓN DE COMPUERTAS
+// ======================================================
 
-    'change',
+function triggerGateAnimation(type) {
 
-    () => {
+    // OR actividad siempre se activa
+    flashGate(gateActivity);
 
-        // Obtener valor input
-        let val = parseInt(
-            maxCapacityInput.value
-        );
-
-        // Limitar rango permitido
-        val = Math.min(
-
-            Math.max(val, 1),
-
-            100
-
-        );
-
-        // Actualizar capacidad
-        maxCapacity = val;
-
-        // Actualizar input visual
-        maxCapacityInput.value =
-            val;
-
-        // Actualizar interfaz
-        updateUI();
-
-        // Registrar cambio
-        logEvent(
-
-            `Capacidad modificada a ${val}`
-
-        );
+    // AND entrada
+    if (type === 'entry') {
+        flashGate(gateEntry);
     }
-);
+}
 
 
-// =====================================
-// EVENTOS BOTONES
-// =====================================
+
+// ======================================================
+// EFECTO TEMPORAL EN COMPUERTA
+// ======================================================
+
+function flashGate(gateElement) {
+
+    toggleGateLed(gateElement, true);
+
+    setTimeout(() => {
+
+        toggleGateLed(gateElement, false);
+
+        updateStaticGates();
+
+    }, 400);
+}
 
 
-// BOTÓN ENTRADA
-btnEnter.addEventListener(
 
-    'click',
+// ======================================================
+// REGISTRO DE EVENTOS
+// ======================================================
 
-    () => {
+function logEvent(message, type) {
 
-        showIdentifyModal();
+    const now = new Date();
 
+    const timeStr = now.toLocaleTimeString(
+        'es-ES',
+        { hour12: false }
+    );
+
+    // Crear entrada
+    const entry = document.createElement('div');
+
+    entry.className = 'log-entry';
+
+    // Color según tipo
+    let colorClass = '';
+
+    if (type === 'in') {
+        colorClass = 'log-action-in';
     }
-);
-
-
-// CONFIRMAR ENTRADA
-modalConfirm.addEventListener(
-
-    'click',
-
-    () => {
-
-        // Obtener nombre
-        let name =
-            studentNameInput
-                .value
-                .trim();
-
-        // Nombre automático vacío
-        if (!name) {
-
-            name =
-                `Anon-${Date.now()}`;
-        }
-
-        // Agregar estudiante
-        addStudentByName(name);
-
-        // Cerrar modal
-        closeIdentifyModal();
+    else if (type === 'out') {
+        colorClass = 'log-action-out';
     }
-);
-
-
-// CANCELAR MODAL
-modalCancel.addEventListener(
-
-    'click',
-
-    () => {
-
-        closeIdentifyModal();
-
+    else if (type === 'full') {
+        colorClass = 'log-action-full';
     }
-);
-
-
-// BOTÓN SALIDA
-btnExit.addEventListener(
-
-    'click',
-
-    () => {
-
-        removeStudent();
-
+    else if (type === 'reset') {
+        colorClass = 'log-action-reset';
     }
-);
 
+    // Contenido del log
+    entry.innerHTML = `
+        <span class="log-time">[${timeStr}]</span>
+        <span class="${colorClass}">
+            ${message}
+        </span>
+    `;
 
-// BOTÓN REINICIO
-btnReset.addEventListener(
-
-    'click',
-
-    () => {
-
-        // Confirmar reinicio
-        const confirmReset =
-            confirm(
-                '¿Desea reiniciar el sistema?'
-            );
-
-        // Cancelar si usuario niega
-        if (!confirmReset) {
-
-            return;
-        }
-
-        // Reiniciar variables
-        currentStudents = 0;
-
-        totalEntradas = 0;
-
-        totalSalidas = 0;
-
-        // Limpiar laboratorio
-        studentsContainer.innerHTML =
-            '';
-
-        // Actualizar interfaz
-        updateUI();
-
-        // Registrar evento
-        logEvent(
-            'Sistema reiniciado'
-        );
-    }
-);
-
-
-// =====================================
-// TECLA ENTER EN MODAL
-// =====================================
-
-/**
- * Permite confirmar entrada
- * presionando ENTER
- */
-studentNameInput.addEventListener(
-
-    'keydown',
-
-    (e) => {
-
-        if (e.key === 'Enter') {
-
-            modalConfirm.click();
-        }
-    }
-);
-
-
-// =====================================
-// INICIALIZACIÓN SISTEMA
-// =====================================
-
-// Actualizar interfaz inicial
-updateUI();
-
-// Registrar inicio sistema
-logEvent(
-    'Sistema iniciado correctamente'
-);
+    // Insertar arriba
+    eventLog.insertBefore(entry, eventLog.firstChild);
+}
