@@ -1,45 +1,52 @@
 <!DOCTYPE html>
+<!-- Define que el documento usa HTML5 -->
 <html lang="es">
+<!-- Inicio del documento HTML en idioma español -->
 
 <head>
-    <!-- Configuración básica -->
+    <!-- Configuración principal de la página -->
+
     <meta charset="UTF-8">
+    <!-- Permite usar caracteres especiales y tildes -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Hace que el sitio sea responsive en celulares y tablets -->
 
-    <!-- Título de la página -->
     <title>Sistema de Control de Acceso</title>
+    <!-- Título que aparece en la pestaña del navegador -->
 
-    <!-- Fuente externa -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Importa la fuente Outfit desde Google Fonts -->
 
-    <!-- Archivo CSS -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Aquí comienza todo el CSS del proyecto */
+    </style>
 </head>
 
 <body>
+    <!-- Contenido visible de toda la página -->
 
-    <!-- =======================================================
-         ENCABEZADO PRINCIPAL
-    ======================================================== -->
     <header>
+        <!-- Encabezado principal del sistema -->
 
-        <h1>Sistema de Control de Acceso</h1>
+        <h1> Sistema de Control de Acceso</h1>
+        <!-- Título principal -->
 
         <div class="subtitle">
-            Simulación Interactiva con Compuertas Lógicas
+            Simulacion Interactiva con Compuertas Logicas
         </div>
-
+        <!-- Subtítulo descriptivo -->
     </header>
 
-    <!-- =======================================================
-         CONTENEDOR PRINCIPAL
-    ======================================================== -->
     <div class="container">
+        <!-- Contenedor principal de toda la interfaz -->
 
-        <!-- ===================================================
-             COLUMNA IZQUIERDA
-        ==================================================== -->
+
+
+        <!-- ========================= -->
+        <!-- COLUMNA IZQUIERDA -->
+        <!-- ========================= -->
+
         <div>
 
             <!-- PANEL DE CONTROL -->
@@ -51,36 +58,32 @@
 
                 <div class="controls-grid">
 
-                    <!-- Capacidad máxima -->
+                    <!-- Configuración de capacidad -->
                     <div class="input-group">
 
-                        <label for="maxCapacity">
+                        <label for="maxCapacity" style="font-size: 0.75rem;">
                             Capacidad
                         </label>
 
+                        <!-- Input numérico para cambiar capacidad máxima -->
                         <input type="number"
-                            id="maxCapacity"
-                            value="20"
-                            min="1"
-                            max="100">
-
+                               id="maxCapacity"
+                               value="20"
+                               min="1"
+                               max="100">
                     </div>
 
-                    <!-- Botón entrada -->
+                    <!-- Botón para registrar entrada -->
                     <button class="btn btn-enter" id="btnEnter">
                         <span>ENTRADA</span>
                     </button>
 
-                    <!-- Botón salida -->
-                    <button class="btn btn-exit"
-                        id="btnExit"
-                        disabled>
-
+                    <!-- Botón para registrar salida -->
+                    <button class="btn btn-exit" id="btnExit" disabled>
                         <span>SALIDA</span>
-
                     </button>
 
-                    <!-- Botón reiniciar -->
+                    <!-- Botón para reiniciar sistema -->
                     <button class="btn btn-reset" id="btnReset">
                         <span>Reiniciar</span>
                     </button>
@@ -88,9 +91,9 @@
                 </div>
             </div>
 
-            <!-- ===================================================
-                 PANEL DE ESTADÍSTICAS
-            ==================================================== -->
+
+
+            <!-- PANEL DE ESTADÍSTICAS -->
             <div class="panel">
 
                 <div class="panel-title">
@@ -99,46 +102,49 @@
 
                 <div class="stats-grid">
 
-                    <!-- Estado actual -->
+                    <!-- Estado del laboratorio -->
                     <div class="stat-row">
 
                         <span>Estado:</span>
 
-                        <div class="status-indicator"
-                            id="statusIndicator">
+                        <div class="status-indicator" id="statusIndicator">
 
+                            <!-- LED visual -->
                             <div class="led" id="statusLed"></div>
 
-                            <span id="statusText">
+                            <!-- Texto de estado -->
+                            <span id="statusText" style="font-size: 0.75rem;">
                                 Vacío
                             </span>
 
                         </div>
-
                     </div>
+
+
 
                     <!-- Barra de ocupación -->
                     <div>
 
-                        <div class="stat-row">
+                        <div class="stat-row" style="margin-bottom: 0.2rem;">
 
                             <span>Ocupación:</span>
 
-                            <span id="occupancyPercent">
+                            <!-- Porcentaje de ocupación -->
+                            <span id="occupancyPercent" style="font-weight: 800;">
                                 0%
                             </span>
-
                         </div>
 
+                        <!-- Contenedor de la barra -->
                         <div class="progress-container">
 
-                            <div class="progress-bar"
-                                id="progressBar">
-                            </div>
+                            <!-- Barra dinámica -->
+                            <div class="progress-bar" id="progressBar"></div>
 
                         </div>
-
                     </div>
+
+
 
                     <!-- Contadores -->
                     <div class="counter-boxes">
@@ -146,10 +152,7 @@
                         <!-- Entradas -->
                         <div class="counter-box entradas">
 
-                            <div class="num"
-                                id="countEntradas">
-                                0
-                            </div>
+                            <div class="num" id="countEntradas">0</div>
 
                             <label>Entradas</label>
 
@@ -158,10 +161,7 @@
                         <!-- Salidas -->
                         <div class="counter-box salidas">
 
-                            <div class="num"
-                                id="countSalidas">
-                                0
-                            </div>
+                            <div class="num" id="countSalidas">0</div>
 
                             <label>Salidas</label>
 
@@ -169,16 +169,21 @@
 
                     </div>
 
-                    <!-- Espacios disponibles -->
-                    <div class="stat-row">
+
+
+                    <!-- Espacios libres -->
+                    <div class="stat-row"
+                         style="background: rgba(255,255,255,0.05);
+                                padding: 0.5rem;
+                                border-radius: 8px;
+                                border: 1px solid rgba(255,255,255,0.1);
+                                font-size: 0.75rem;">
 
                         <span>Libres:</span>
 
-                        <strong>
+                        <strong style="font-size: 1.1rem;">
                             🧑‍💻
-                            <span id="freeSpaces">
-                                20
-                            </span>
+                            <span id="freeSpaces">20</span>
                         </strong>
 
                     </div>
@@ -187,56 +192,73 @@
             </div>
         </div>
 
-        <!-- ===================================================
-             COLUMNA CENTRAL
-        ==================================================== -->
-        <div style="display:flex; flex-direction:column; gap:0.75rem;">
 
-            <!-- ===================================================
-                 VISTA DEL LABORATORIO
-            ==================================================== -->
-            <div class="panel lab-view"
-                id="labView">
+
+        <!-- ========================= -->
+        <!-- COLUMNA CENTRAL -->
+        <!-- ========================= -->
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+
+            <!-- VISTA DEL LABORATORIO -->
+            <div class="panel lab-view" id="labView">
 
                 <!-- Título flotante -->
-                <div class="panel-title floating-title">
+                <div class="panel-title"
+                     style="width: 100%;
+                            position: absolute;
+                            top: 10px;
+                            left: 10px;
+                            border:none;
+                            z-index:10;
+                            background:rgba(15,23,42,0.9);
+                            padding:6px 12px;
+                            border-radius:15px;
+                            max-width: max-content;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+                            font-size: 0.75rem;">
+
                     🏫 Laboratorio
+
                 </div>
 
-                <!-- Puerta entrada -->
+                <!-- Puerta de entrada -->
                 <div class="door door-entry"></div>
 
-                <!-- Puerta salida -->
+                <!-- Puerta de salida -->
                 <div class="door door-exit"></div>
 
-                <!-- Contenedor estudiantes -->
-                <div id="studentsContainer">
+                <!-- Zona donde aparecen estudiantes -->
+                <div id="studentsContainer"
+                     style="margin-top: 45px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 8px;
+                            width: 100%;
+                            align-content: flex-start;">
 
-                    <!-- Estudiantes generados dinámicamente -->
+                    <!-- Aquí JS genera estudiantes dinámicamente -->
 
                 </div>
-
             </div>
 
-            <!-- ===================================================
-                 PANEL COMPUERTAS LÓGICAS
-            ==================================================== -->
+
+
+            <!-- PANEL DE COMPUERTAS LÓGICAS -->
             <div class="panel bottom-section">
 
                 <div class="panel-title">
                     🎛️ Compuertas Lógicas
                 </div>
 
-                <!-- ===================================================
-                     COMPUERTAS BÁSICAS
-                ==================================================== -->
+                <!-- Sección de compuertas básicas -->
                 <div class="gates-section-label">
                     Básicas
                 </div>
 
                 <div class="gates-row">
 
-                    <!-- NOT -->
+                    <!-- Compuerta NOT -->
                     <div class="gate" id="gateCapacity">
 
                         <div class="gate-label">NOT</div>
@@ -245,24 +267,11 @@
                             Capacidad
                         </div>
 
-                        <div class="gate-io">
-
-                            <div class="gate-dot in"></div>
-
-                            <div class="wire in"></div>
-
-                            <div class="gate-box">
-                                <span class="gate-symbol">¬</span>
-                            </div>
-
-                            <div class="wire out"></div>
-
-                            <div class="gate-dot out"></div>
-
-                        </div>
                     </div>
 
-                    <!-- AND -->
+
+
+                    <!-- Compuerta AND -->
                     <div class="gate" id="gateEntry">
 
                         <div class="gate-label">AND</div>
@@ -271,29 +280,11 @@
                             Entrada
                         </div>
 
-                        <div class="gate-io">
-
-                            <div style="display:flex; flex-direction:column; gap:4px;">
-
-                                <div class="gate-dot in"></div>
-                                <div class="gate-dot in"></div>
-
-                            </div>
-
-                            <div class="wire in"></div>
-
-                            <div class="gate-box">
-                                <span class="gate-symbol">&</span>
-                            </div>
-
-                            <div class="wire out"></div>
-
-                            <div class="gate-dot out"></div>
-
-                        </div>
                     </div>
 
-                    <!-- OR -->
+
+
+                    <!-- Compuerta OR -->
                     <div class="gate" id="gateActivity">
 
                         <div class="gate-label">OR</div>
@@ -302,26 +293,17 @@
                             Actividad
                         </div>
 
-                        <div class="gate-io">
+                    </div>
 
-                            <div style="display:flex; flex-direction:column; gap:4px;">
 
-                                <div class="gate-dot in"></div>
-                                <div class="gate-dot in"></div>
 
-                            </div>
+                    <!-- Indicador FULL -->
+                    <div class="gate" id="gateAlert">
 
-                            <div class="wire in"></div>
-
-                            <div class="gate-box">
-                                <span class="gate-symbol">≥1</span>
-                            </div>
-
-                            <div class="wire out"></div>
-
-                            <div class="gate-dot out"></div>
-
+                        <div class="gate-label">
+                            🚨 LLENO
                         </div>
+
                     </div>
 
                 </div>
@@ -329,128 +311,148 @@
             </div>
         </div>
 
-        <!-- ===================================================
-             COLUMNA DERECHA
-        ==================================================== -->
-        <div class="panel">
 
+
+        <!-- ========================= -->
+        <!-- COLUMNA DERECHA -->
+        <!-- ========================= -->
+
+        <div class="panel"
+             style="display: flex;
+                    flex-direction: column;">
+
+            <!-- Registro de eventos -->
             <div class="panel-title">
                 📝 Registro de Eventos
             </div>
 
-            <!-- Registro dinámico -->
-            <div class="event-log"
-                id="eventLog">
+            <!-- Contenedor de logs -->
+            <div class="event-log" id="eventLog">
+
+                <!-- Aquí JS agrega eventos -->
 
             </div>
 
-        </div>
 
+
+            <!-- Información extra -->
+            <div style="margin-top: 0.75rem;
+                        padding: 0.6rem;
+                        background: rgba(99,102,241,0.1);
+                        border-radius: 8px;
+                        border: 1px solid rgba(99,102,241,0.2);
+                        font-size: 0.7rem;
+                        color: #cbd5e1;">
+
+                <div style="font-weight: 600;
+                            margin-bottom: 0.4rem;
+                            color: #818cf8;">
+
+                    ℹ️ Sistema de Control
+
+                </div>
+
+                <div style="line-height: 1.4;">
+
+                    • Sistema de acceso interactivo<br>
+                    • Simulación con compuertas lógicas<br>
+                    • Capacidad personalizable<br>
+                    • Registro en tiempo real
+
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- =======================================================
-         MODAL IDENTIFICACIÓN
-    ======================================================== -->
+
+
+    <!-- ========================= -->
+    <!-- MODAL DE IDENTIFICACIÓN -->
+    <!-- ========================= -->
+
     <div id="identModal"
-        class="modal">
+         class="modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="identTitle">
 
         <div class="modal-box">
 
+            <!-- Encabezado del modal -->
             <div class="modal-header">
 
-                <div class="modal-icon">
-                    📋
-                </div>
+                <div class="modal-icon">📋</div>
 
-                <div class="modal-title">
+                <div id="identTitle" class="modal-title">
                     Identificación
                 </div>
 
             </div>
 
+
+
+            <!-- Descripción -->
             <div class="modal-desc">
                 Ingrese el nombre o ID del estudiante.
             </div>
 
-            <!-- Campo de texto -->
+
+
+            <!-- Input -->
             <div class="modal-input-wrapper">
 
-                <label class="modal-label">
+                <label class="modal-label"
+                       for="studentNameInput">
+
                     📝 Datos del Estudiante
+
                 </label>
 
+                <!-- Campo de texto -->
                 <input id="studentNameInput"
-                    class="modal-input"
-                    type="text"
-                    placeholder="Ej: Juan García">
+                       class="modal-input"
+                       type="text"
+                       placeholder="Ej: Juan García">
 
             </div>
+
+
 
             <!-- Botones -->
             <div class="modal-actions">
 
+                <!-- Cancelar -->
                 <button id="modalCancel"
-                    class="modal-btn cancel">
+                        class="modal-btn cancel">
 
-                    ✕ Cancelar
+                    <span>✕ Cancelar</span>
 
                 </button>
 
+                <!-- Confirmar -->
                 <button id="modalConfirm"
-                    class="modal-btn confirm">
+                        class="modal-btn confirm">
 
-                    ✓ Confirmar Entrada
-
-                </button>
-
-            </div>
-
-        </div>
-    </div>
-
-    <!-- =======================================================
-         MODAL SALIDA
-    ======================================================== -->
-    <div id="exitModal"
-        class="modal">
-
-        <div class="modal-box">
-
-            <div class="modal-header">
-
-                <div class="modal-icon">
-                    👋
-                </div>
-
-                <div class="modal-title">
-                    Registrar Salida
-                </div>
-
-            </div>
-
-            <!-- Lista estudiantes -->
-            <div class="modal-students-list"
-                id="studentsList">
-
-            </div>
-
-            <div class="modal-actions">
-
-                <button id="exitModalCancel"
-                    class="modal-btn cancel">
-
-                    ✕ Cancelar
+                    <span>✓ Confirmar Entrada</span>
 
                 </button>
 
             </div>
-
         </div>
     </div>
 
-    <!-- Archivo JavaScript -->
-    <script src="app.js"></script>
+
+
+    <!-- ========================= -->
+    <!-- SCRIPT JAVASCRIPT -->
+    <!-- ========================= -->
+
+    <script>
+
+        // Aquí comienza toda la lógica JavaScript
+
+    </script>
 
 </body>
-
 </html>
