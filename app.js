@@ -1,15 +1,6 @@
-// ======================================================
-// SISTEMA DE CONTROL DE ACCESO - app.js
-// Archivo JavaScript principal
-// Aquí se controla toda la lógica y funcionamiento
-// interactivo del laboratorio.
-// ======================================================
-
-
-
-// ======================================================
-// VARIABLES DE ESTADO DEL SISTEMA
-// ======================================================
+// =========================================
+// VARIABLES DE ESTADO
+// =========================================
 
 // Cantidad actual de estudiantes dentro del laboratorio
 let currentStudents = 0;
@@ -17,18 +8,19 @@ let currentStudents = 0;
 // Capacidad máxima permitida
 let maxCapacity = 20;
 
-// Contador total de entradas registradas
+// Total acumulado de entradas
 let totalEntradas = 0;
 
-// Contador total de salidas registradas
+// Total acumulado de salidas
 let totalSalidas = 0;
 
 
 
-// ======================================================
-// LISTA DE EMOJIS PARA REPRESENTAR ESTUDIANTES
-// ======================================================
+// =========================================
+// ARRAY DE EMOJIS
+// =========================================
 
+// Emojis que se usarán para representar estudiantes
 const studentEmojis = [
     '👨‍🎓',
     '👩‍🎓',
@@ -46,70 +38,108 @@ const studentEmojis = [
 
 
 
-// ======================================================
-// REFERENCIAS A ELEMENTOS DEL DOM
-// ======================================================
+// =========================================
+// ELEMENTOS DEL DOM
+// =========================================
 
-// Inputs y botones principales
+// Input de capacidad máxima
 const maxCapacityInput = document.getElementById('maxCapacity');
+
+// Botón entrada
 const btnEnter = document.getElementById('btnEnter');
+
+// Botón salida
 const btnExit = document.getElementById('btnExit');
+
+// Botón reinicio
 const btnReset = document.getElementById('btnReset');
 
-// Contenedor visual de estudiantes
+// Contenedor de estudiantes
 const studentsContainer = document.getElementById('studentsContainer');
 
-// Indicadores de estado
+
+
+// Indicadores visuales
 const statusIndicator = document.getElementById('statusIndicator');
 const statusLed = document.getElementById('statusLed');
 const statusText = document.getElementById('statusText');
 
-// Barra de ocupación
+
+
+// Barra de progreso
 const progressBar = document.getElementById('progressBar');
 const occupancyPercent = document.getElementById('occupancyPercent');
+
+
 
 // Contadores
 const countEntradas = document.getElementById('countEntradas');
 const countSalidas = document.getElementById('countSalidas');
 const freeSpacesText = document.getElementById('freeSpaces');
 
-// Registro de eventos
+
+
+// Log de eventos
 const eventLog = document.getElementById('eventLog');
 
 
 
-// ======================================================
+// =========================================
 // COMPUERTAS LÓGICAS
-// ======================================================
+// =========================================
 
+// Compuerta capacidad
 const gateCapacity = document.getElementById('gateCapacity');
+
+// Compuerta entrada
 const gateEntry = document.getElementById('gateEntry');
+
+// Compuerta actividad
 const gateActivity = document.getElementById('gateActivity');
+
+// Compuerta alerta
 const gateAlert = document.getElementById('gateAlert');
+
+// Compuerta vacío
 const gateEmpty = document.getElementById('gateEmpty');
+
+// Compuerta intermedia
 const gateIntermediate = document.getElementById('gateIntermediate');
+
+// Compuerta extrema
 const gateExtreme = document.getElementById('gateExtreme');
 
 
 
-// ======================================================
-// ELEMENTOS DE LOS MODALES
-// ======================================================
+// =========================================
+// MODALES
+// =========================================
 
+// Callback pendiente para registrar entrada
 let pendingEntryCallback = null;
+
+// ID del estudiante seleccionado para salida
 let selectedStudentIdForExit = null;
 
-// Modal de entrada
+
+
+// Modal entrada
 const identModal = document.getElementById('identModal');
 
-// Modal de salida
+// Modal salida
 const exitModal = document.getElementById('exitModal');
 
-// Input del nombre
+
+
+// Input del estudiante
 const studentNameInput = document.getElementById('studentNameInput');
+
+
 
 // Lista de estudiantes
 const studentsList = document.getElementById('studentsList');
+
+
 
 // Botones del modal
 const modalConfirm = document.getElementById('modalConfirm');
@@ -118,164 +148,216 @@ const exitModalCancel = document.getElementById('exitModalCancel');
 
 
 
-// ======================================================
-// MOSTRAR MODAL DE IDENTIFICACIÓN
-// ======================================================
+// =========================================
+// MOSTRAR MODAL DE ENTRADA
+// =========================================
 
 function showIdentifyModal(callback) {
 
-    // Si no existe el modal, usar prompt clásico
+    // Verifica si existe el modal
     if (!identModal) {
 
+        // Usa prompt como respaldo
         let name = prompt(
             'Ingrese nombre o ID del estudiante'
         );
 
-        // Si cancela, generar nombre anónimo
+        // Si cancela
         if (name === null) {
-            name = `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
+            name = `Anon-${Math.floor(Math.random()*9000)+1000}`;
         }
 
-        // Si está vacío, generar nombre automático
-        name = name.trim() || `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
+        // Si está vacío
+        name = name.trim() || `Anon-${Math.floor(Math.random()*9000)+1000}`;
 
+        // Ejecuta callback
         callback(name);
 
         return;
     }
 
-    // Guardar función callback
+    // Guarda callback
     pendingEntryCallback = callback;
 
-    // Mostrar modal
+    // Activa modal
     identModal.classList.add('active');
 
-    // Desactivar botón entrada
+    // Deshabilita botón
     btnEnter.disabled = true;
 
-    // Dar foco al input
-    setTimeout(() => {
-        studentNameInput.focus();
-    }, 80);
+    // Focus al input
+    setTimeout(() => studentNameInput.focus(), 80);
 }
 
 
 
-// ======================================================
-// CERRAR MODAL DE IDENTIFICACIÓN
-// ======================================================
+// =========================================
+// CERRAR MODAL
+// =========================================
 
 function closeIdentifyModal() {
 
+    // Oculta modal
     identModal.classList.remove('active');
 
+    // Limpia callback
     pendingEntryCallback = null;
 
+    // Reactiva botón según capacidad
     btnEnter.disabled = currentStudents >= maxCapacity;
 }
 
 
 
-// ======================================================
+// =========================================
 // CONFIRMAR ENTRADA
-// ======================================================
+// =========================================
 
 function onModalConfirm() {
 
-    let name = studentNameInput.value.trim();
+    // Obtiene nombre
+    let name = studentNameInput.value
+        ? studentNameInput.value.trim()
+        : '';
 
-    // Si no escribe nada
+    // Si está vacío crea anónimo
     if (!name) {
-        name = `Anon-${Math.floor(Math.random() * 9000) + 1000}`;
+        name = `Anon-${Math.floor(Math.random()*9000)+1000}`;
     }
 
-    // Ejecutar callback
+    // Ejecuta callback
     if (pendingEntryCallback) {
         pendingEntryCallback(name);
     }
 
+    // Cierra modal
     closeIdentifyModal();
 }
 
 
 
-// ======================================================
-// CANCELAR ENTRADA
-// ======================================================
+// =========================================
+// CANCELAR MODAL
+// =========================================
 
 function onModalCancel() {
 
-    logEvent('Ingreso cancelado por el operador', 'reset');
+    // Registra evento
+    logEvent(
+        'Ingreso cancelado por el operador',
+        'reset'
+    );
 
+    // Cierra modal
     closeIdentifyModal();
 }
 
 
 
-// ======================================================
+// =========================================
 // EVENTOS DEL MODAL
-// ======================================================
+// =========================================
 
-modalConfirm.addEventListener('click', onModalConfirm);
-
-modalCancel.addEventListener('click', onModalCancel);
-
-// Detectar teclas
-studentNameInput.addEventListener('keydown', (e) => {
-
-    if (e.key === 'Enter') {
-        onModalConfirm();
-    }
-
-    if (e.key === 'Escape') {
-        onModalCancel();
-    }
-});
+// Confirmar
+if (modalConfirm) {
+    modalConfirm.addEventListener(
+        'click',
+        onModalConfirm
+    );
+}
 
 
 
-// ======================================================
+// Cancelar
+if (modalCancel) {
+    modalCancel.addEventListener(
+        'click',
+        onModalCancel
+    );
+}
+
+
+
+// Eventos teclado
+if (studentNameInput) {
+
+    studentNameInput.addEventListener('keydown', (e) => {
+
+        // Enter confirma
+        if (e.key === 'Enter') {
+            onModalConfirm();
+        }
+
+        // Escape cancela
+        if (e.key === 'Escape') {
+            onModalCancel();
+        }
+
+    });
+}
+
+
+
+// =========================================
 // MOSTRAR MODAL DE SALIDA
-// ======================================================
+// =========================================
 
 function showExitModal() {
 
+    // Si no existe modal
+    if (!exitModal) {
+
+        removeStudentLogic(false);
+
+        return;
+    }
+
+    // Limpia selección
     selectedStudentIdForExit = null;
 
+    // Genera lista
     populateStudentsList();
 
+    // Activa modal
     exitModal.classList.add('active');
 
+    // Deshabilita botón
     btnExit.disabled = true;
 }
 
 
 
-// ======================================================
+// =========================================
 // CERRAR MODAL DE SALIDA
-// ======================================================
+// =========================================
 
 function closeExitModal() {
 
+    // Oculta modal
     exitModal.classList.remove('active');
 
+    // Limpia selección
     selectedStudentIdForExit = null;
 
+    // Reactiva botón
     btnExit.disabled = currentStudents <= 0;
 }
 
 
 
-// ======================================================
-// LLENAR LISTA DE ESTUDIANTES
-// ======================================================
+// =========================================
+// GENERAR LISTA DE ESTUDIANTES
+// =========================================
 
 function populateStudentsList() {
 
+    // Limpia lista
     studentsList.innerHTML = '';
 
-    // Obtener estudiantes activos
-    const students = studentsContainer.querySelectorAll('.student:not(.leaving)');
+    // Obtiene estudiantes visibles
+    const students = studentsContainer.querySelectorAll(
+        '.student:not(.leaving)'
+    );
 
     // Si no hay estudiantes
     if (students.length === 0) {
@@ -289,130 +371,86 @@ function populateStudentsList() {
         return;
     }
 
-    // Crear tarjeta para cada estudiante
+    // Recorre estudiantes
     students.forEach((studentEl) => {
 
+        // Nombre
         const name = studentEl.dataset.name || 'Estudiante';
+
+        // ID
         const id = studentEl.id;
 
+        // Avatar
         const avatarDiv = studentEl.querySelector('.student-avatar');
 
+        // Iniciales
         const initials = avatarDiv?.textContent || '?';
 
-        const gradient = avatarDiv?.style.background ||
+        // Fondo
+        const gradient =
+            avatarDiv?.style.background ||
             'linear-gradient(135deg, #818cf8, #c084fc)';
 
-        // Crear tarjeta visual
+        // Crea item
         const itemEl = document.createElement('div');
 
         itemEl.className = 'student-item';
 
         itemEl.dataset.studentId = id;
 
+        // HTML interno
         itemEl.innerHTML = `
-            <div class="student-item-avatar" style="background:${gradient};">
-                ${initials}
+            <div class="student-item-avatar"
+                 style="background: ${gradient};">
+                 ${initials}
             </div>
 
             <div class="student-item-info">
-                <div class="student-item-name">${name}</div>
-                <div class="student-item-id">${id}</div>
+
+                <div class="student-item-name">
+                    ${name}
+                </div>
+
+                <div class="student-item-id">
+                    ${id}
+                </div>
+
             </div>
 
-            <div class="student-item-checkbox">✓</div>
+            <div class="student-item-checkbox">
+                ✓
+            </div>
         `;
 
-        // Seleccionar estudiante
+        // Evento selección
         itemEl.addEventListener('click', () => {
 
+            // Quita selección previa
             studentsList
                 .querySelectorAll('.student-item')
                 .forEach(s => s.classList.remove('selected'));
 
+            // Marca actual
             itemEl.classList.add('selected');
 
+            // Guarda ID
             selectedStudentIdForExit = id;
         });
 
+        // Agrega item
         studentsList.appendChild(itemEl);
     });
-
-    // Botón confirmar salida
-    const confirmBtn = document.createElement('button');
-
-    confirmBtn.className = 'modal-btn confirm';
-
-    confirmBtn.style.marginTop = '1rem';
-
-    confirmBtn.innerHTML = '<span>✓ Confirmar Salida</span>';
-
-    confirmBtn.addEventListener('click', () => {
-
-        if (selectedStudentIdForExit) {
-
-            removeStudentById(selectedStudentIdForExit);
-
-            closeExitModal();
-        }
-    });
-
-    studentsList.appendChild(confirmBtn);
 }
 
 
 
-// ======================================================
-// ELIMINAR ESTUDIANTE POR ID
-// ======================================================
-
-function removeStudentById(studentId) {
-
-    const studentEl = document.getElementById(studentId);
-
-    if (!studentEl) return;
-
-    const name = studentEl.dataset.name || 'Estudiante';
-
-    // Animación salida
-    studentEl.classList.add('leaving');
-
-    setTimeout(() => {
-
-        if (studentsContainer.contains(studentEl)) {
-            studentsContainer.removeChild(studentEl);
-        }
-
-    }, 600);
-
-    // Actualizar contadores
-    currentStudents = Math.max(0, currentStudents - 1);
-
-    totalSalidas++;
-
-    logEvent(`Estudiante "${name}" salió del laboratorio`, 'out');
-
-    triggerGateAnimation('exit');
-
-    updateUI();
-}
-
-
-
-// ======================================================
-// BOTÓN CANCELAR SALIDA
-// ======================================================
-
-exitModalCancel.addEventListener('click', closeExitModal);
-
-
-
-// ======================================================
+// =========================================
 // AGREGAR ESTUDIANTE
-// ======================================================
+// =========================================
 
 function addStudentByName(name) {
 
-    // Validar capacidad
+    // Verifica capacidad
     if (currentStudents >= maxCapacity) {
 
         logEvent(
@@ -423,34 +461,40 @@ function addStudentByName(name) {
         return;
     }
 
-    // Incrementar contadores
+    // Incrementa contadores
     currentStudents++;
     totalEntradas++;
 
-    // Obtener iniciales
+    // Obtiene iniciales
     const initials = name
         .split(' ')
         .map(word => word[0]?.toUpperCase() || '')
         .join('')
         .substring(0, 2) || '?';
 
-    // Colores disponibles
+
+
+    // Gradientes
     const gradients = [
+
         'linear-gradient(135deg, #818cf8, #c084fc)',
         'linear-gradient(135deg, #06b6d4, #3b82f6)',
         'linear-gradient(135deg, #10b981, #14b8a6)',
-        'linear-gradient(135deg, #f59e0b, #ec4899)',
-        'linear-gradient(135deg, #8b5cf6, #6366f1)',
-        'linear-gradient(135deg, #ef4444, #f97316)',
-        'linear-gradient(135deg, #14b8a6, #06b6d4)',
-        'linear-gradient(135deg, #ec4899, #f43f5e)'
+        'linear-gradient(135deg, #f59e0b, #ec4899)'
+
     ];
 
-    const gradientIndex = (totalEntradas - 1) % gradients.length;
+
+
+    // Selecciona gradiente
+    const gradientIndex =
+        (totalEntradas - 1) % gradients.length;
 
     const gradient = gradients[gradientIndex];
 
-    // Crear tarjeta estudiante
+
+
+    // Crea tarjeta estudiante
     const studentEl = document.createElement('div');
 
     studentEl.className = 'student entering';
@@ -458,6 +502,8 @@ function addStudentByName(name) {
     studentEl.id = `student-${totalEntradas}`;
 
     studentEl.dataset.name = name;
+
+
 
     // Avatar
     const avatarDiv = document.createElement('div');
@@ -468,6 +514,8 @@ function addStudentByName(name) {
 
     avatarDiv.style.background = gradient;
 
+
+
     // Nombre
     const nameDiv = document.createElement('div');
 
@@ -475,35 +523,52 @@ function addStudentByName(name) {
 
     nameDiv.textContent = name.substring(0, 14);
 
-    nameDiv.title = name;
 
-    // ID visual
+
+    // ID
     const idDiv = document.createElement('div');
 
     idDiv.className = 'student-id';
 
     idDiv.textContent = `#${totalEntradas}`;
 
-    // Insertar elementos
+
+
+    // Agrega elementos
     studentEl.appendChild(avatarDiv);
     studentEl.appendChild(nameDiv);
     studentEl.appendChild(idDiv);
 
+    // Inserta estudiante
     studentsContainer.appendChild(studentEl);
 
-    // Registrar evento
-    logEvent(`Estudiante "${name}" ingresó al laboratorio`, 'in');
 
-    // Activar animación lógica
+
+    // Log
+    logEvent(
+        `Estudiante "${name}" ingresó al laboratorio`,
+        'in'
+    );
+
+
+
+    // Activa compuerta
     triggerGateAnimation('entry');
 
-    // Actualizar interfaz
+
+
+    // Actualiza interfaz
     updateUI();
 
-    // Verificar si quedó lleno
+
+
+    // Verifica lleno
     if (currentStudents === maxCapacity) {
 
-        logEvent('¡ALERTA: LABORATORIO LLENO!', 'full');
+        logEvent(
+            '¡ALERTA: LABORATORIO LLENO!',
+            'full'
+        );
 
         triggerGateAnimation('full');
     }
@@ -511,26 +576,32 @@ function addStudentByName(name) {
 
 
 
-// ======================================================
-// INICIALIZACIÓN DEL SISTEMA
-// ======================================================
+// =========================================
+// INICIALIZACIÓN
+// =========================================
 
+// Actualiza interfaz
 updateUI();
 
-logEvent('Sistema inicializado y listo', 'reset');
+// Log inicial
+logEvent(
+    'Sistema inicializado y listo',
+    'reset'
+);
 
 
 
-// ======================================================
+// =========================================
 // EVENTOS PRINCIPALES
-// ======================================================
+// =========================================
 
-// Cambio de capacidad máxima
+// Cambio capacidad
 maxCapacityInput.addEventListener('change', (e) => {
 
+    // Obtiene valor
     let val = parseInt(e.target.value);
 
-    // Validar mínimo
+    // Validación
     if (val < 1 || isNaN(val)) {
 
         val = 1;
@@ -538,47 +609,38 @@ maxCapacityInput.addEventListener('change', (e) => {
         e.target.value = 1;
     }
 
+    // Actualiza capacidad
     maxCapacity = val;
 
-    // Si la nueva capacidad es menor
-    if (currentStudents > maxCapacity) {
+    // Actualiza interfaz
+    updateUI();
 
-        const diff = currentStudents - maxCapacity;
-
-        // Expulsar estudiantes sobrantes
-        for (let i = 0; i < diff; i++) {
-
-            setTimeout(() => {
-
-                removeStudentLogic(true);
-
-            }, i * 150);
-        }
-
-    } else {
-
-        updateUI();
-    }
-
-    logEvent(`Capacidad máxima actualizada a ${maxCapacity}`, 'reset');
+    // Log
+    logEvent(
+        `Capacidad máxima actualizada a ${maxCapacity}`,
+        'reset'
+    );
 });
 
 
 
-// ======================================================
-// BOTÓN ENTRADA
-// ======================================================
-
+// Botón entrada
 btnEnter.addEventListener('click', () => {
 
+    // Verifica espacio
     if (currentStudents < maxCapacity) {
 
+        // Limpia input
         studentNameInput.value = '';
 
-        showIdentifyModal((name) => addStudentByName(name));
+        // Muestra modal
+        showIdentifyModal(
+            (name) => addStudentByName(name)
+        );
 
     } else {
 
+        // Log lleno
         logEvent(
             'Intento de ingreso bloqueado: laboratorio lleno',
             'full'
@@ -588,12 +650,10 @@ btnEnter.addEventListener('click', () => {
 
 
 
-// ======================================================
-// BOTÓN SALIDA
-// ======================================================
-
+// Botón salida
 btnExit.addEventListener('click', () => {
 
+    // Verifica estudiantes
     if (currentStudents > 0) {
 
         showExitModal();
@@ -602,20 +662,18 @@ btnExit.addEventListener('click', () => {
 
 
 
-// ======================================================
-// BOTÓN REINICIAR
-// ======================================================
-
+// Botón reset
 btnReset.addEventListener('click', () => {
 
+    // Reinicia contadores
     currentStudents = 0;
     totalEntradas = 0;
     totalSalidas = 0;
 
-    // Obtener todos los estudiantes
-    const allStudents = studentsContainer.querySelectorAll('.student');
+    // Elimina estudiantes visualmente
+    const allStudents =
+        studentsContainer.querySelectorAll('.student');
 
-    // Animar salida
     allStudents.forEach((student, index) => {
 
         setTimeout(() => {
@@ -632,112 +690,75 @@ btnReset.addEventListener('click', () => {
             }, 400);
 
         }, index * 50);
+
     });
 
-    logEvent('Reinicio total del laboratorio', 'reset');
+    // Log
+    logEvent(
+        'Reinicio total del laboratorio',
+        'reset'
+    );
 
-    setTimeout(updateUI, allStudents.length * 50 + 100);
+    // Actualiza UI
+    setTimeout(
+        updateUI,
+        allStudents.length * 50 + 100
+    );
 });
 
 
 
-// ======================================================
-// ELIMINAR ESTUDIANTE
-// ======================================================
-
-function removeStudentLogic(isSystemEviction = false) {
-
-    const students =
-        studentsContainer.querySelectorAll('.student:not(.leaving)');
-
-    if (students.length === 0) return;
-
-    const lastStudent = students[students.length - 1];
-
-    const name =
-        lastStudent.dataset.name ||
-        lastStudent.textContent ||
-        'Estudiante';
-
-    // Animación salida
-    lastStudent.classList.add('leaving');
-
-    setTimeout(() => {
-
-        if (studentsContainer.contains(lastStudent)) {
-
-            studentsContainer.removeChild(lastStudent);
-        }
-
-    }, 600);
-
-    // Actualizar contadores
-    currentStudents = Math.max(0, currentStudents - 1);
-
-    if (!isSystemEviction) {
-        totalSalidas++;
-    }
-
-    // Registrar evento
-    if (!isSystemEviction) {
-
-        logEvent(`Estudiante "${name}" salió del laboratorio`, 'out');
-
-    } else {
-
-        logEvent(
-            `Se liberó espacio: ${name} removido por ajuste de capacidad`,
-            'reset'
-        );
-    }
-
-    updateUI();
-}
-
-
-
-// ======================================================
+// =========================================
 // ACTUALIZAR INTERFAZ
-// ======================================================
+// =========================================
 
 function updateUI() {
 
-    // Actualizar contadores
+    // Actualiza números
     countEntradas.textContent = totalEntradas;
-
     countSalidas.textContent = totalSalidas;
 
+    // Espacios libres
     const free = maxCapacity - currentStudents;
 
     freeSpacesText.textContent = free;
 
-    // Calcular porcentaje
+
+
+    // Porcentaje ocupación
     const percent = Math.round(
         (currentStudents / maxCapacity) * 100
     );
+
+
 
     // Barra progreso
     progressBar.style.width = `${percent}%`;
 
     occupancyPercent.textContent = `${percent}%`;
 
-    // Reiniciar estados visuales
+
+
+    // Estados visuales
     statusLed.classList.remove('full');
     progressBar.classList.remove('full');
     statusIndicator.classList.remove('full-alert');
 
-    // Estados del laboratorio
+
+
+    // Laboratorio vacío
     if (currentStudents === 0) {
 
         statusText.textContent = 'Vacío';
 
         statusLed.style.background = '#64748b';
 
-        statusLed.style.boxShadow = 'none';
+        occupancyPercent.style.color =
+            'var(--text-muted)';
+    }
 
-        occupancyPercent.style.color = 'var(--text-muted)';
-
-    } else if (currentStudents === maxCapacity) {
+    // Laboratorio lleno
+    else if (currentStudents === maxCapacity) {
 
         statusText.textContent = 'SALÓN LLENO';
 
@@ -747,61 +768,70 @@ function updateUI() {
 
         statusIndicator.classList.add('full-alert');
 
-        statusLed.style.background = 'var(--danger)';
+        occupancyPercent.style.color =
+            'var(--danger)';
+    }
 
-        occupancyPercent.style.color = 'var(--danger)';
-
-    } else if (percent >= 80) {
+    // Casi lleno
+    else if (percent >= 80) {
 
         statusText.textContent = 'Casi lleno';
 
-        statusLed.style.background = 'var(--warning)';
+        statusLed.style.background =
+            'var(--warning)';
 
-        statusLed.style.boxShadow = '0 0 10px var(--warning)';
+        occupancyPercent.style.color =
+            'var(--warning)';
+    }
 
-        occupancyPercent.style.color = 'var(--warning)';
-
-    } else {
+    // Estado normal
+    else {
 
         statusText.textContent = 'Con espacio';
 
-        statusLed.style.background = 'var(--success)';
+        statusLed.style.background =
+            'var(--success)';
 
-        statusLed.style.boxShadow = '0 0 10px var(--success)';
-
-        occupancyPercent.style.color = 'var(--success)';
+        occupancyPercent.style.color =
+            'var(--success)';
     }
 
-    // Activar/desactivar botones
-    btnEnter.disabled = currentStudents >= maxCapacity;
 
-    btnExit.disabled = currentStudents <= 0;
 
-    // Actualizar compuertas
+    // Botones
+    btnEnter.disabled =
+        currentStudents >= maxCapacity;
+
+    btnExit.disabled =
+        currentStudents <= 0;
+
+
+
+    // Actualiza compuertas
     updateStaticGates();
 }
 
 
 
-// ======================================================
-// ACTUALIZAR COMPUERTAS LÓGICAS
-// ======================================================
+// =========================================
+// ACTUALIZAR COMPUERTAS
+// =========================================
 
 function updateStaticGates() {
 
-    // NOT -> hay espacio disponible
+    // NOT
     toggleGateLed(
         gateCapacity,
         currentStudents < maxCapacity
     );
 
-    // NOR -> laboratorio vacío
+    // NOR
     toggleGateLed(
         gateEmpty,
         currentStudents === 0
     );
 
-    // FULL -> laboratorio lleno
+    // FULL
     toggleGateLed(
         gateAlert,
         currentStudents === maxCapacity
@@ -810,53 +840,60 @@ function updateStaticGates() {
 
 
 
-// ======================================================
-// ENCENDER/APAGAR COMPUERTAS
-// ======================================================
+// =========================================
+// ACTIVAR LED DE COMPUERTA
+// =========================================
 
 function toggleGateLed(gateElement, isOn) {
 
+    // Verifica existencia
     if (!gateElement) return;
 
+    // Busca LED
     const led =
         gateElement.querySelector('.gate-dot.out') ||
-        gateElement.querySelector('.gate-dot') ||
-        gateElement.querySelector('.legend-dot');
+        gateElement.querySelector('.gate-dot');
 
+    // Activa clase
     gateElement.classList.toggle('active', !!isOn);
 
+    // Si no existe LED
     if (!led) return;
 
+    // Activa luz
     led.classList.toggle('on', !!isOn);
 }
 
 
 
-// ======================================================
-// ACTIVAR ANIMACIÓN DE COMPUERTAS
-// ======================================================
+// =========================================
+// ANIMACIÓN COMPUERTAS
+// =========================================
 
 function triggerGateAnimation(type) {
 
-    // OR actividad siempre se activa
+    // Siempre activa OR
     flashGate(gateActivity);
 
-    // AND entrada
+    // Entrada activa AND
     if (type === 'entry') {
+
         flashGate(gateEntry);
     }
 }
 
 
 
-// ======================================================
-// EFECTO TEMPORAL EN COMPUERTA
-// ======================================================
+// =========================================
+// EFECTO FLASH
+// =========================================
 
 function flashGate(gateElement) {
 
+    // Enciende
     toggleGateLed(gateElement, true);
 
+    // Apaga después
     setTimeout(() => {
 
         toggleGateLed(gateElement, false);
@@ -868,48 +905,69 @@ function flashGate(gateElement) {
 
 
 
-// ======================================================
+// =========================================
 // REGISTRO DE EVENTOS
-// ======================================================
+// =========================================
 
 function logEvent(message, type) {
 
+    // Fecha actual
     const now = new Date();
 
+    // Hora formateada
     const timeStr = now.toLocaleTimeString(
         'es-ES',
         { hour12: false }
     );
 
-    // Crear entrada
+    // Crea entrada
     const entry = document.createElement('div');
 
     entry.className = 'log-entry';
 
-    // Color según tipo
+
+
+    // Clase de color
     let colorClass = '';
 
     if (type === 'in') {
+
         colorClass = 'log-action-in';
     }
+
     else if (type === 'out') {
+
         colorClass = 'log-action-out';
     }
+
     else if (type === 'full') {
+
         colorClass = 'log-action-full';
     }
+
     else if (type === 'reset') {
+
         colorClass = 'log-action-reset';
     }
 
-    // Contenido del log
+
+
+    // HTML interno
     entry.innerHTML = `
-        <span class="log-time">[${timeStr}]</span>
+        <span class="log-time">
+            [${timeStr}]
+        </span>
+
         <span class="${colorClass}">
             ${message}
         </span>
     `;
 
-    // Insertar arriba
-    eventLog.insertBefore(entry, eventLog.firstChild);
+
+
+    // Inserta arriba del log
+    eventLog.insertBefore(
+        entry,
+        eventLog.firstChild
+    );
 }
