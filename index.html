@@ -2,483 +2,453 @@
 <html lang="es">
 
 <head>
-
-    <!-- ===================================== -->
-    <!-- CONFIGURACIONES BÁSICAS DE LA PÁGINA -->
-    <!-- ===================================== -->
-
-    <!-- Permite usar caracteres especiales -->
+    <!-- Configuración básica -->
     <meta charset="UTF-8">
-
-    <!-- Hace responsive la página -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Título que aparece en la pestaña -->
+    <!-- Título de la página -->
     <title>Sistema de Control de Acceso</title>
 
+    <!-- Fuente externa -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
 
-    <!-- ===================================== -->
-    <!-- FUENTE EXTERNA -->
-    <!-- ===================================== -->
-
-    <!-- Fuente Outfit desde Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-
-    <!-- ===================================== -->
-    <!-- ARCHIVO CSS -->
-    <!-- ===================================== -->
-
-    <!-- Conecta el archivo CSS -->
+    <!-- Archivo CSS -->
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-
-    <!-- ===================================== -->
-    <!-- ENCABEZADO PRINCIPAL -->
-    <!-- ===================================== -->
-
+    <!-- =======================================================
+         ENCABEZADO PRINCIPAL
+    ======================================================== -->
     <header>
 
-        <!-- Título principal -->
         <h1>Sistema de Control de Acceso</h1>
 
-        <!-- Subtítulo -->
         <div class="subtitle">
             Simulación Interactiva con Compuertas Lógicas
         </div>
 
     </header>
 
-
-    <!-- ===================================== -->
-    <!-- CONTENEDOR GENERAL -->
-    <!-- ===================================== -->
-
+    <!-- =======================================================
+         CONTENEDOR PRINCIPAL
+    ======================================================== -->
     <div class="container">
 
-
-        <!-- ================================= -->
-        <!-- PANEL IZQUIERDO -->
-        <!-- ================================= -->
-
+        <!-- ===================================================
+             COLUMNA IZQUIERDA
+        ==================================================== -->
         <div>
 
-
-            <!-- ============================= -->
             <!-- PANEL DE CONTROL -->
-            <!-- ============================= -->
-
             <div class="panel">
 
-                <!-- Título del panel -->
                 <div class="panel-title">
                     Panel de Control
                 </div>
 
-
-                <!-- Grid de controles -->
                 <div class="controls-grid">
 
-
-                    <!-- ========================= -->
-                    <!-- CONFIGURACIÓN CAPACIDAD -->
-                    <!-- ========================= -->
-
+                    <!-- Capacidad máxima -->
                     <div class="input-group">
 
-                        <!-- Etiqueta -->
                         <label for="maxCapacity">
                             Capacidad
                         </label>
 
-                        <!-- Input capacidad máxima -->
-                        <input
-                            type="number"
+                        <input type="number"
                             id="maxCapacity"
                             value="20"
                             min="1"
-                            max="100"
-                        >
+                            max="100">
 
                     </div>
 
-
-                    <!-- ========================= -->
-                    <!-- BOTÓN ENTRADA -->
-                    <!-- ========================= -->
-
-                    <button
-                        class="btn btn-enter"
-                        id="btnEnter"
-                    >
-
-                        ENTRADA
-
+                    <!-- Botón entrada -->
+                    <button class="btn btn-enter" id="btnEnter">
+                        <span>ENTRADA</span>
                     </button>
 
-
-                    <!-- ========================= -->
-                    <!-- BOTÓN SALIDA -->
-                    <!-- ========================= -->
-
-                    <button
-                        class="btn btn-exit"
+                    <!-- Botón salida -->
+                    <button class="btn btn-exit"
                         id="btnExit"
-                        disabled
-                    >
+                        disabled>
 
-                        SALIDA
+                        <span>SALIDA</span>
 
                     </button>
 
-
-                    <!-- ========================= -->
-                    <!-- BOTÓN REINICIO -->
-                    <!-- ========================= -->
-
-                    <button
-                        class="btn btn-reset"
-                        id="btnReset"
-                    >
-
-                        Reiniciar
-
+                    <!-- Botón reiniciar -->
+                    <button class="btn btn-reset" id="btnReset">
+                        <span>Reiniciar</span>
                     </button>
 
                 </div>
-
             </div>
 
-
-
-            <!-- ============================= -->
-            <!-- PANEL ESTADÍSTICAS -->
-            <!-- ============================= -->
-
+            <!-- ===================================================
+                 PANEL DE ESTADÍSTICAS
+            ==================================================== -->
             <div class="panel">
 
-
-                <!-- Título panel -->
                 <div class="panel-title">
-
                     Estadísticas
-
                 </div>
 
-
-                <!-- Grid estadísticas -->
                 <div class="stats-grid">
 
-
-                    <!-- ========================= -->
-                    <!-- ESTADO DEL LABORATORIO -->
-                    <!-- ========================= -->
-
+                    <!-- Estado actual -->
                     <div class="stat-row">
 
                         <span>Estado:</span>
 
+                        <div class="status-indicator"
+                            id="statusIndicator">
 
-                        <!-- Indicador visual -->
-                        <div
-                            class="status-indicator"
-                            id="statusIndicator"
-                        >
+                            <div class="led" id="statusLed"></div>
 
-                            <!-- LED visual -->
-                            <div
-                                class="led"
-                                id="statusLed"
-                            ></div>
-
-                            <!-- Texto estado -->
                             <span id="statusText">
-
                                 Vacío
-
                             </span>
 
                         </div>
 
                     </div>
 
-
-
-                    <!-- ========================= -->
-                    <!-- BARRA DE OCUPACIÓN -->
-                    <!-- ========================= -->
-
+                    <!-- Barra de ocupación -->
                     <div>
 
-
-                        <!-- Texto porcentaje -->
                         <div class="stat-row">
 
                             <span>Ocupación:</span>
 
                             <span id="occupancyPercent">
-
                                 0%
-
                             </span>
 
                         </div>
 
-
-                        <!-- Contenedor barra -->
                         <div class="progress-container">
 
-                            <!-- Barra dinámica -->
-                            <div
-                                class="progress-bar"
-                                id="progressBar"
-                            ></div>
+                            <div class="progress-bar"
+                                id="progressBar">
+                            </div>
 
                         </div>
 
                     </div>
 
-
-
-                    <!-- ========================= -->
-                    <!-- CONTADORES -->
-                    <!-- ========================= -->
-
+                    <!-- Contadores -->
                     <div class="counter-boxes">
-
 
                         <!-- Entradas -->
                         <div class="counter-box entradas">
 
-                            <div
-                                class="num"
-                                id="countEntradas"
-                            >
-
+                            <div class="num"
+                                id="countEntradas">
                                 0
-
                             </div>
 
-                            <label>
-
-                                Entradas
-
-                            </label>
+                            <label>Entradas</label>
 
                         </div>
-
-
 
                         <!-- Salidas -->
                         <div class="counter-box salidas">
 
-                            <div
-                                class="num"
-                                id="countSalidas"
-                            >
-
+                            <div class="num"
+                                id="countSalidas">
                                 0
-
                             </div>
 
-                            <label>
-
-                                Salidas
-
-                            </label>
+                            <label>Salidas</label>
 
                         </div>
 
                     </div>
 
+                    <!-- Espacios disponibles -->
+                    <div class="stat-row">
 
-
-                    <!-- ========================= -->
-                    <!-- ESPACIOS DISPONIBLES -->
-                    <!-- ========================= -->
-
-                    <div class="stat-row free-box">
-
-                        <span>
-
-                            Libres:
-
-                        </span>
+                        <span>Libres:</span>
 
                         <strong>
-
                             🧑‍💻
                             <span id="freeSpaces">
-
                                 20
-
                             </span>
-
                         </strong>
 
                     </div>
 
                 </div>
-
             </div>
-
         </div>
 
+        <!-- ===================================================
+             COLUMNA CENTRAL
+        ==================================================== -->
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
 
+            <!-- ===================================================
+                 VISTA DEL LABORATORIO
+            ==================================================== -->
+            <div class="panel lab-view"
+                id="labView">
 
-        <!-- ================================= -->
-        <!-- VISTA DEL LABORATORIO -->
-        <!-- ================================= -->
+                <!-- Título flotante -->
+                <div class="panel-title floating-title">
+                    🏫 Laboratorio
+                </div>
 
-        <div
-            class="panel lab-view"
-            id="labView"
-        >
+                <!-- Puerta entrada -->
+                <div class="door door-entry"></div>
 
+                <!-- Puerta salida -->
+                <div class="door door-exit"></div>
 
-            <!-- Título flotante -->
-            <div class="panel-title floating-title">
+                <!-- Contenedor estudiantes -->
+                <div id="studentsContainer">
 
-                🏫 Laboratorio
+                    <!-- Estudiantes generados dinámicamente -->
+
+                </div>
 
             </div>
 
+            <!-- ===================================================
+                 PANEL COMPUERTAS LÓGICAS
+            ==================================================== -->
+            <div class="panel bottom-section">
 
-            <!-- ============================= -->
-            <!-- PUERTAS -->
-            <!-- ============================= -->
+                <div class="panel-title">
+                    🎛️ Compuertas Lógicas
+                </div>
 
-            <!-- Puerta entrada -->
-            <div class="door door-entry"></div>
+                <!-- ===================================================
+                     COMPUERTAS BÁSICAS
+                ==================================================== -->
+                <div class="gates-section-label">
+                    Básicas
+                </div>
 
-            <!-- Puerta salida -->
-            <div class="door door-exit"></div>
+                <div class="gates-row">
 
+                    <!-- NOT -->
+                    <div class="gate" id="gateCapacity">
 
+                        <div class="gate-label">NOT</div>
 
-            <!-- ============================= -->
-            <!-- CONTENEDOR ESTUDIANTES -->
-            <!-- ============================= -->
+                        <div class="gate-description">
+                            Capacidad
+                        </div>
 
-            <div id="studentsContainer"></div>
+                        <div class="gate-io">
+
+                            <div class="gate-dot in"></div>
+
+                            <div class="wire in"></div>
+
+                            <div class="gate-box">
+                                <span class="gate-symbol">¬</span>
+                            </div>
+
+                            <div class="wire out"></div>
+
+                            <div class="gate-dot out"></div>
+
+                        </div>
+                    </div>
+
+                    <!-- AND -->
+                    <div class="gate" id="gateEntry">
+
+                        <div class="gate-label">AND</div>
+
+                        <div class="gate-description">
+                            Entrada
+                        </div>
+
+                        <div class="gate-io">
+
+                            <div style="display:flex; flex-direction:column; gap:4px;">
+
+                                <div class="gate-dot in"></div>
+                                <div class="gate-dot in"></div>
+
+                            </div>
+
+                            <div class="wire in"></div>
+
+                            <div class="gate-box">
+                                <span class="gate-symbol">&</span>
+                            </div>
+
+                            <div class="wire out"></div>
+
+                            <div class="gate-dot out"></div>
+
+                        </div>
+                    </div>
+
+                    <!-- OR -->
+                    <div class="gate" id="gateActivity">
+
+                        <div class="gate-label">OR</div>
+
+                        <div class="gate-description">
+                            Actividad
+                        </div>
+
+                        <div class="gate-io">
+
+                            <div style="display:flex; flex-direction:column; gap:4px;">
+
+                                <div class="gate-dot in"></div>
+                                <div class="gate-dot in"></div>
+
+                            </div>
+
+                            <div class="wire in"></div>
+
+                            <div class="gate-box">
+                                <span class="gate-symbol">≥1</span>
+                            </div>
+
+                            <div class="wire out"></div>
+
+                            <div class="gate-dot out"></div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===================================================
+             COLUMNA DERECHA
+        ==================================================== -->
+        <div class="panel">
+
+            <div class="panel-title">
+                📝 Registro de Eventos
+            </div>
+
+            <!-- Registro dinámico -->
+            <div class="event-log"
+                id="eventLog">
+
+            </div>
 
         </div>
 
     </div>
 
+    <!-- =======================================================
+         MODAL IDENTIFICACIÓN
+    ======================================================== -->
+    <div id="identModal"
+        class="modal">
 
-
-    <!-- ===================================== -->
-    <!-- MODAL IDENTIFICACIÓN -->
-    <!-- ===================================== -->
-
-    <div
-        id="identModal"
-        class="modal"
-    >
-
-
-        <!-- Caja modal -->
         <div class="modal-box">
-
-
-            <!-- ============================= -->
-            <!-- ENCABEZADO MODAL -->
-            <!-- ============================= -->
 
             <div class="modal-header">
 
-
-                <!-- Icono -->
                 <div class="modal-icon">
-
                     📋
-
                 </div>
 
-
-                <!-- Título -->
                 <div class="modal-title">
-
                     Identificación
-
                 </div>
 
             </div>
-
-
-
-            <!-- ============================= -->
-            <!-- DESCRIPCIÓN -->
-            <!-- ============================= -->
 
             <div class="modal-desc">
-
                 Ingrese el nombre o ID del estudiante.
+            </div>
+
+            <!-- Campo de texto -->
+            <div class="modal-input-wrapper">
+
+                <label class="modal-label">
+                    📝 Datos del Estudiante
+                </label>
+
+                <input id="studentNameInput"
+                    class="modal-input"
+                    type="text"
+                    placeholder="Ej: Juan García">
 
             </div>
 
-
-
-            <!-- ============================= -->
-            <!-- INPUT ESTUDIANTE -->
-            <!-- ============================= -->
-
-            <input
-                id="studentNameInput"
-                class="modal-input"
-                type="text"
-                placeholder="Ej: Juan García"
-            >
-
-
-
-            <!-- ============================= -->
-            <!-- BOTONES MODAL -->
-            <!-- ============================= -->
-
+            <!-- Botones -->
             <div class="modal-actions">
 
+                <button id="modalCancel"
+                    class="modal-btn cancel">
 
-                <!-- Botón cancelar -->
-                <button
-                    id="modalCancel"
-                    class="modal-btn cancel"
-                >
-
-                    Cancelar
+                    ✕ Cancelar
 
                 </button>
 
+                <button id="modalConfirm"
+                    class="modal-btn confirm">
 
-
-                <!-- Botón confirmar -->
-                <button
-                    id="modalConfirm"
-                    class="modal-btn confirm"
-                >
-
-                    Confirmar Entrada
+                    ✓ Confirmar Entrada
 
                 </button>
 
             </div>
 
         </div>
-
     </div>
 
+    <!-- =======================================================
+         MODAL SALIDA
+    ======================================================== -->
+    <div id="exitModal"
+        class="modal">
 
+        <div class="modal-box">
 
-    <!-- ===================================== -->
-    <!-- ARCHIVO JAVASCRIPT -->
-    <!-- ===================================== -->
+            <div class="modal-header">
 
-    <!-- Conecta el archivo JS -->
+                <div class="modal-icon">
+                    👋
+                </div>
+
+                <div class="modal-title">
+                    Registrar Salida
+                </div>
+
+            </div>
+
+            <!-- Lista estudiantes -->
+            <div class="modal-students-list"
+                id="studentsList">
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button id="exitModalCancel"
+                    class="modal-btn cancel">
+
+                    ✕ Cancelar
+
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Archivo JavaScript -->
     <script src="app.js"></script>
 
 </body>
